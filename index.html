@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Relay · SMS & Call Forwarder</title>
+<style>
+  :root {
+    --bg: #0f0e17;
+    --bg-soft: #16151f;
+    --card: rgba(255,255,255,0.04);
+    --card-border: rgba(255,255,255,0.08);
+    --text: #ece8f5;
+    --text-dim: #9b96ad;
+    --accent: #d97757;      /* Claude clay */
+    --accent-2: #7c6bff;
+    --sms: #6ee7b7;
+    --call-in: #7dd3fc;
+    --call-missed: #fb7185;
+    --shadow: 0 20px 60px -20px rgba(0,0,0,0.7);
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font);
+    background: radial-gradient(1200px 800px at 15% -10%, #241f3a 0%, transparent 55%),
+                radial-gradient(1000px 700px at 110% 10%, #2a1c26 0%, transparent 50%),
+                var(--bg);
+    color: var(--text);
+    min-height: 100%;
+    overflow-x: hidden;
+  }
+
+  /* animated aurora blobs */
+  .aurora { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.35; animation: drift 18s ease-in-out infinite; }
+  .blob.b1 { width: 420px; height: 420px; background: var(--accent); top: -120px; left: -80px; }
+  .blob.b2 { width: 380px; height: 380px; background: var(--accent-2); bottom: -140px; right: -60px; animation-delay: -6s; }
+  .blob.b3 { width: 300px; height: 300px; background: #2dd4bf; top: 40%; left: 55%; animation-delay: -11s; opacity: 0.18; }
+  @keyframes drift {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33% { transform: translate(40px,-30px) scale(1.08); }
+    66% { transform: translate(-30px,25px) scale(0.95); }
+  }
+
+  .wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .logo {
+    width: 46px; height: 46px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: grid; place-items: center; box-shadow: var(--shadow);
+    animation: pulseLogo 4s ease-in-out infinite;
+  }
+  @keyframes pulseLogo { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-4px);} }
+  .logo svg { width: 24px; height: 24px; }
+  .brand h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
+  .brand p { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+  .status { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-dim);
+    background: var(--card); border: 1px solid var(--card-border); padding: 8px 14px; border-radius: 100px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: #52525b; }
+  .dot.live { background: var(--sms); box-shadow: 0 0 0 0 rgba(110,231,183,0.6); animation: ripple 1.8s infinite; }
+  @keyframes ripple { 0%{ box-shadow: 0 0 0 0 rgba(110,231,183,0.5);} 70%{ box-shadow: 0 0 0 10px rgba(110,231,183,0);} 100%{ box-shadow: 0 0 0 0 rgba(110,231,183,0);} }
+
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+  .stat { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; backdrop-filter: blur(8px); }
+  .stat .num { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; }
+  .stat .lbl { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+  .controls { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+  .chip { font-size: 13px; color: var(--text-dim); background: var(--card); border: 1px solid var(--card-border);
+    padding: 8px 16px; border-radius: 100px; cursor: pointer; transition: all .2s; user-select: none; }
+  .chip:hover { color: var(--text); border-color: var(--accent); }
+  .chip.active { background: var(--accent); color: #1a0f0a; border-color: var(--accent); font-weight: 600; }
+
+  .feed { display: flex; flex-direction: column; gap: 12px; }
+  .event {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 16px; padding: 16px 18px; backdrop-filter: blur(8px);
+    animation: slideIn .5s cubic-bezier(.22,1,.36,1);
+    position: relative; overflow: hidden;
+  }
+  .event::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background: var(--accent); }
+  .event.sms::before { background: var(--sms); }
+  .event.call_incoming::before { background: var(--call-in); }
+  .event.call_missed::before { background: var(--call-missed); }
+  .event.call_ended::before { background: var(--accent-2); }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+  .event.flash { animation: slideIn .5s cubic-bezier(.22,1,.36,1), glow 1.6s ease-out; }
+  @keyframes glow { 0%{ box-shadow: 0 0 0 2px var(--accent), var(--shadow);} 100%{ box-shadow: 0 0 0 0 transparent;} }
+
+  .ev-icon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0;
+    background: rgba(255,255,255,0.06); }
+  .ev-icon svg { width: 20px; height: 20px; }
+  .sms .ev-icon { color: var(--sms); } .call_incoming .ev-icon { color: var(--call-in); }
+  .call_missed .ev-icon { color: var(--call-missed); } .call_ended .ev-icon { color: var(--accent-2); }
+
+  .ev-body { flex: 1; min-width: 0; }
+  .ev-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+  .ev-from { font-weight: 600; font-size: 15px; }
+  .ev-time { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .ev-text { font-size: 14px; color: var(--text-dim); word-break: break-word; line-height: 1.5; }
+  .ev-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; margin-top: 8px;
+    background: rgba(255,255,255,0.06); color: var(--text-dim); }
+  .badge-device { font-size: 11px; color: var(--accent); background: rgba(217,119,87,0.12); padding: 2px 8px; border-radius: 6px; }
+
+  .empty { text-align: center; color: var(--text-dim); padding: 60px 20px; }
+  .empty svg { width: 54px; height: 54px; opacity: .4; margin-bottom: 14px; }
+  .spinner { width: 30px; height: 30px; border: 3px solid var(--card-border); border-top-color: var(--accent);
+    border-radius: 50%; animation: spin .8s linear infinite; margin: 40px auto; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .setup-note { margin-top: 40px; font-size: 12px; color: var(--text-dim); text-align: center; line-height: 1.7; }
+  .setup-note code { background: var(--bg-soft); padding: 2px 6px; border-radius: 5px; color: var(--accent); }
+
+  @media (max-width: 560px) {
+    .stats { grid-template-columns: repeat(2,1fr); }
+    .brand h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="aurora"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 4h16v12H5.5L4 18z"/><path d="M8 9h8M8 12h5"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Relay</h1>
+        <p>SMS &amp; call forwarding · live</p>
+      </div>
+    </div>
+    <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Connecting…</span></div>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><div class="num" id="stTotal">0</div><div class="lbl">Total events</div></div>
+    <div class="stat"><div class="num" id="stSms">0</div><div class="lbl">SMS today</div></div>
+    <div class="stat"><div class="num" id="stCalls">0</div><div class="lbl">Calls today</div></div>
+    <div class="stat"><div class="num" id="stDevices">0</div><div class="lbl">Devices online</div></div>
+  </div>
+
+  <div class="controls">
+    <div class="chip active" data-filter="all">All</div>
+    <div class="chip" data-filter="sms">SMS</div>
+    <div class="chip" data-filter="call">Calls</div>
+    <div class="chip" data-filter="missed">Missed</div>
+  </div>
+
+  <div class="feed" id="feed">
+    <div class="spinner"></div>
+  </div>
+
+  <div class="setup-note">
+    Not seeing events? Make sure your Firebase config is filled in inside
+    <code>firebase-config.js</code> and the Android app is running on your phones.
+  </div>
+</div>
+
+<!-- Firebase SDK (compat build = simplest, no bundler needed) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+(function () {
+  const feed = document.getElementById('feed');
+  const statusDot = document.getElementById('statusDot');
+  const statusText = document.getElementById('statusText');
+  let events = [];
+  let filter = 'all';
+
+  // ---- guard: config not filled in yet ----
+  if (!window.firebaseConfig || window.firebaseConfig.projectId === 'YOUR_PROJECT_ID') {
+    feed.innerHTML = emptyState('Add your Firebase config',
+      'Open <b>firebase-config.js</b> and paste the config object from your Firebase project settings.');
+    statusText.textContent = 'Not configured';
+    return;
+  }
+
+  firebase.initializeApp(window.firebaseConfig);
+  const db = firebase.firestore();
+
+  db.collection('events').orderBy('ts', 'desc').limit(200)
+    .onSnapshot(
+      (snap) => {
+        statusDot.classList.add('live');
+        statusText.textContent = 'Live';
+        const isFirst = events.length === 0;
+        events = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        render(isFirst ? null : snap.docChanges());
+        updateStats();
+      },
+      (err) => {
+        statusDot.classList.remove('live');
+        statusText.textContent = 'Connection error';
+        feed.innerHTML = emptyState('Cannot read from Firestore',
+          'Check your Firestore security rules allow read access. Details: ' + err.message);
+      }
+    );
+
+  document.querySelectorAll('.chip').forEach(c => {
+    c.addEventListener('click', () => {
+      document.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+      filter = c.dataset.filter;
+      render();
+    });
+  });
+
+  function matches(e) {
+    if (filter === 'all') return true;
+    if (filter === 'sms') return e.type === 'sms';
+    if (filter === 'call') return e.type && e.type.startsWith('call');
+    if (filter === 'missed') return e.type === 'call_missed';
+    return true;
+  }
+
+  function render(changes) {
+    const list = events.filter(matches);
+    if (!list.length) {
+      feed.innerHTML = emptyState('No events yet',
+        'Incoming texts and calls from your phones will appear here in real-time.');
+      return;
+    }
+    const newIds = new Set();
+    if (changes) changes.forEach(ch => { if (ch.type === 'added') newIds.add(ch.doc.id); });
+    feed.innerHTML = list.map(e => card(e, newIds.has(e.id))).join('');
+  }
+
+  function card(e, isNew) {
+    const t = e.type || 'sms';
+    const cls = t;
+    const from = escapeHtml(e.from || 'Unknown');
+    const device = e.device ? `<span class="badge-device">${escapeHtml(e.device)}</span>` : '';
+    let title, body, icon;
+    if (t === 'sms') {
+      icon = icons.sms; title = from;
+      body = `<div class="ev-text">${escapeHtml(e.text || '')}</div>`;
+    } else if (t === 'call_missed') {
+      icon = icons.missed; title = from;
+      body = `<div class="ev-text">Missed call</div>`;
+    } else if (t === 'call_incoming') {
+      icon = icons.call; title = from;
+      body = `<div class="ev-text">Incoming call…</div>`;
+    } else { // call_ended
+      icon = icons.call; title = from;
+      const dur = e.duration ? ` · ${fmtDur(e.duration)}` : '';
+      body = `<div class="ev-text">Call ended${dur}</div>`;
+    }
+    return `<div class="event ${cls} ${isNew ? 'flash' : ''}">
+      <div class="ev-icon">${icon}</div>
+      <div class="ev-body">
+        <div class="ev-top"><span class="ev-from">${title}</span><span class="ev-time">${fmtTime(e.ts)}</span></div>
+        ${body}
+        <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
+          <span class="ev-tag">${labelFor(t)}</span>${device}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function updateStats() {
+    document.getElementById('stTotal').textContent = events.length;
+    const today = new Date(); today.setHours(0,0,0,0);
+    const todayMs = today.getTime();
+    const sms = events.filter(e => e.type === 'sms' && msOf(e.ts) >= todayMs).length;
+    const calls = events.filter(e => e.type && e.type.startsWith('call') && msOf(e.ts) >= todayMs).length;
+    document.getElementById('stSms').textContent = sms;
+    document.getElementById('stCalls').textContent = calls;
+    const devices = new Set(events.filter(e => msOf(e.ts) >= todayMs).map(e => e.device).filter(Boolean));
+    document.getElementById('stDevices').textContent = devices.size;
+  }
+
+  // ---- helpers ----
+  function msOf(ts) {
+    if (!ts) return 0;
+    if (typeof ts.toMillis === 'function') return ts.toMillis();
+    if (ts.seconds) return ts.seconds * 1000;
+    return new Date(ts).getTime() || 0;
+  }
+  function fmtTime(ts) {
+    const ms = msOf(ts); if (!ms) return '';
+    const d = new Date(ms), now = Date.now(), diff = (now - ms) / 1000;
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return Math.floor(diff/60) + 'm ago';
+    if (diff < 86400 && d.getDate() === new Date().getDate())
+      return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    return d.toLocaleDateString([], {month:'short', day:'numeric'}) + ' ' +
+           d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  }
+  function fmtDur(s) { const m = Math.floor(s/60), sec = s%60; return m ? `${m}m ${sec}s` : `${sec}s`; }
+  function labelFor(t) {
+    return { sms:'SMS', call_incoming:'Incoming call', call_missed:'Missed call', call_ended:'Call' }[t] || t;
+  }
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function emptyState(title, sub) {
+    return `<div class="empty">${icons.empty}<div style="font-size:16px;color:var(--text);margin-bottom:6px;font-weight:600;">${title}</div><div>${sub}</div></div>`;
+  }
+
+  const icons = {
+    sms: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    call: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+    missed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/><line x1="23" y1="1" x2="17" y2="7"/><line x1="17" y1="1" x2="23" y2="7"/></svg>',
+    empty: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+  };
+})();
+</script>
+</body>
+</html>
