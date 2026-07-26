@@ -12,11 +12,12 @@
     --card-border: rgba(255,255,255,0.08);
     --text: #ece8f5;
     --text-dim: #9b96ad;
-    --accent: #d97757;      /* Claude clay */
+    --accent: #d97757;
     --accent-2: #7c6bff;
     --sms: #6ee7b7;
     --call-in: #7dd3fc;
     --call-missed: #fb7185;
+    --danger: #fb7185;
     --shadow: 0 20px 60px -20px rgba(0,0,0,0.7);
     --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
   }
@@ -31,8 +32,6 @@
     min-height: 100%;
     overflow-x: hidden;
   }
-
-  /* animated aurora blobs */
   .aurora { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
   .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.35; animation: drift 18s ease-in-out infinite; }
   .blob.b1 { width: 420px; height: 420px; background: var(--accent); top: -120px; left: -80px; }
@@ -46,6 +45,43 @@
 
   .wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
 
+  /* ---------- login ---------- */
+  .login-screen { position: relative; z-index: 1; min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+  .login-card {
+    width: 100%; max-width: 380px; background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 22px; padding: 34px 30px; backdrop-filter: blur(14px); box-shadow: var(--shadow);
+    animation: slideIn .5s cubic-bezier(.22,1,.36,1);
+  }
+  .login-logo {
+    width: 52px; height: 52px; border-radius: 15px; margin-bottom: 18px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: grid; place-items: center;
+  }
+  .login-logo svg { width: 26px; height: 26px; }
+  .login-card h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+  .login-card p.sub { font-size: 13px; color: var(--text-dim); margin: 4px 0 22px; }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
+  .field input {
+    width: 100%; padding: 12px 14px; border-radius: 12px; font-size: 14px; color: var(--text);
+    background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); outline: none; transition: border .2s;
+  }
+  .field input:focus { border-color: var(--accent); }
+  .btn {
+    width: 100%; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+    border: none; margin-top: 6px; transition: transform .1s, opacity .2s;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; }
+  .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--card-border); margin-top: 10px; }
+  .btn-ghost:hover { color: var(--text); border-color: var(--accent); }
+  .btn[disabled] { opacity: .5; cursor: default; }
+  .login-msg { font-size: 13px; margin-top: 14px; min-height: 18px; }
+  .login-msg.err { color: var(--danger); }
+  .login-msg.ok { color: var(--sms); }
+  .login-hint { font-size: 12px; color: var(--text-dim); margin-top: 16px; line-height: 1.6; text-align: center; }
+
+  /* ---------- header / dashboard ---------- */
   header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
   .brand { display: flex; align-items: center; gap: 14px; }
   .logo {
@@ -59,11 +95,15 @@
   .brand h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
   .brand p { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
 
+  .header-right { display: flex; align-items: center; gap: 10px; }
   .status { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-dim);
     background: var(--card); border: 1px solid var(--card-border); padding: 8px 14px; border-radius: 100px; }
   .dot { width: 9px; height: 9px; border-radius: 50%; background: #52525b; }
-  .dot.live { background: var(--sms); box-shadow: 0 0 0 0 rgba(110,231,183,0.6); animation: ripple 1.8s infinite; }
+  .dot.live { background: var(--sms); animation: ripple 1.8s infinite; }
   @keyframes ripple { 0%{ box-shadow: 0 0 0 0 rgba(110,231,183,0.5);} 70%{ box-shadow: 0 0 0 10px rgba(110,231,183,0);} 100%{ box-shadow: 0 0 0 0 rgba(110,231,183,0);} }
+  .signout { font-size: 13px; color: var(--text-dim); background: var(--card); border: 1px solid var(--card-border);
+    padding: 8px 14px; border-radius: 100px; cursor: pointer; transition: all .2s; }
+  .signout:hover { color: var(--text); border-color: var(--danger); }
 
   .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
   .stat { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; backdrop-filter: blur(8px); }
@@ -81,8 +121,7 @@
     display: flex; gap: 14px; align-items: flex-start;
     background: var(--card); border: 1px solid var(--card-border);
     border-radius: 16px; padding: 16px 18px; backdrop-filter: blur(8px);
-    animation: slideIn .5s cubic-bezier(.22,1,.36,1);
-    position: relative; overflow: hidden;
+    animation: slideIn .5s cubic-bezier(.22,1,.36,1); position: relative; overflow: hidden;
   }
   .event::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background: var(--accent); }
   .event.sms::before { background: var(--sms); }
@@ -93,8 +132,7 @@
   .event.flash { animation: slideIn .5s cubic-bezier(.22,1,.36,1), glow 1.6s ease-out; }
   @keyframes glow { 0%{ box-shadow: 0 0 0 2px var(--accent), var(--shadow);} 100%{ box-shadow: 0 0 0 0 transparent;} }
 
-  .ev-icon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0;
-    background: rgba(255,255,255,0.06); }
+  .ev-icon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; background: rgba(255,255,255,0.06); }
   .ev-icon svg { width: 20px; height: 20px; }
   .sms .ev-icon { color: var(--sms); } .call_incoming .ev-icon { color: var(--call-in); }
   .call_missed .ev-icon { color: var(--call-missed); } .call_ended .ev-icon { color: var(--accent-2); }
@@ -104,42 +142,60 @@
   .ev-from { font-weight: 600; font-size: 15px; }
   .ev-time { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
   .ev-text { font-size: 14px; color: var(--text-dim); word-break: break-word; line-height: 1.5; }
-  .ev-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; margin-top: 8px;
-    background: rgba(255,255,255,0.06); color: var(--text-dim); }
+  .ev-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; margin-top: 8px; background: rgba(255,255,255,0.06); color: var(--text-dim); }
   .badge-device { font-size: 11px; color: var(--accent); background: rgba(217,119,87,0.12); padding: 2px 8px; border-radius: 6px; }
 
   .empty { text-align: center; color: var(--text-dim); padding: 60px 20px; }
   .empty svg { width: 54px; height: 54px; opacity: .4; margin-bottom: 14px; }
-  .spinner { width: 30px; height: 30px; border: 3px solid var(--card-border); border-top-color: var(--accent);
-    border-radius: 50%; animation: spin .8s linear infinite; margin: 40px auto; }
+  .spinner { width: 30px; height: 30px; border: 3px solid var(--card-border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; margin: 40px auto; }
   @keyframes spin { to { transform: rotate(360deg); } }
+  .hidden { display: none !important; }
 
-  .setup-note { margin-top: 40px; font-size: 12px; color: var(--text-dim); text-align: center; line-height: 1.7; }
-  .setup-note code { background: var(--bg-soft); padding: 2px 6px; border-radius: 5px; color: var(--accent); }
-
-  @media (max-width: 560px) {
-    .stats { grid-template-columns: repeat(2,1fr); }
-    .brand h1 { font-size: 18px; }
-  }
+  @media (max-width: 560px) { .stats { grid-template-columns: repeat(2,1fr); } .brand h1 { font-size: 18px; } }
 </style>
 </head>
 <body>
 <div class="aurora"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
 
-<div class="wrap">
+<!-- ================= LOGIN ================= -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h1>Relay</h1>
+    <p class="sub">Sign in to view your forwarded messages.</p>
+
+    <div class="field">
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" placeholder="you@example.com" />
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" />
+    </div>
+
+    <button class="btn btn-primary" id="signInBtn">Sign in</button>
+    <button class="btn btn-ghost" id="createBtn">Create my account</button>
+
+    <div class="login-msg" id="loginMsg"></div>
+    <div class="login-hint">First time here? Enter an email + password and tap<br><b>Create my account</b> once. After that, just sign in.</div>
+  </div>
+</div>
+
+<!-- ================= DASHBOARD ================= -->
+<div class="wrap hidden" id="appScreen">
   <header>
     <div class="brand">
       <div class="logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 4h16v12H5.5L4 18z"/><path d="M8 9h8M8 12h5"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H5.5L4 18z"/><path d="M8 9h8M8 12h5"/></svg>
       </div>
-      <div>
-        <h1>Relay</h1>
-        <p>SMS &amp; call forwarding · live</p>
-      </div>
+      <div><h1>Relay</h1><p>SMS &amp; call forwarding · live</p></div>
     </div>
-    <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Connecting…</span></div>
+    <div class="header-right">
+      <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">Connecting…</span></div>
+      <button class="signout" id="signOutBtn">Sign out</button>
+    </div>
   </header>
 
   <div class="stats">
@@ -156,65 +212,97 @@
     <div class="chip" data-filter="missed">Missed</div>
   </div>
 
-  <div class="feed" id="feed">
-    <div class="spinner"></div>
-  </div>
-
-  <div class="setup-note">
-    Not seeing events? Make sure your Firebase config is filled in inside
-    <code>firebase-config.js</code> and the Android app is running on your phones.
-  </div>
+  <div class="feed" id="feed"><div class="spinner"></div></div>
 </div>
 
-<!-- Firebase SDK (compat build = simplest, no bundler needed) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
 (function () {
-  const feed = document.getElementById('feed');
-  const statusDot = document.getElementById('statusDot');
-  const statusText = document.getElementById('statusText');
-  let events = [];
-  let filter = 'all';
+  const $ = (id) => document.getElementById(id);
+  const loginScreen = $('loginScreen'), appScreen = $('appScreen'), loginMsg = $('loginMsg');
 
-  // ---- guard: config not filled in yet ----
   if (!window.firebaseConfig || window.firebaseConfig.projectId === 'YOUR_PROJECT_ID') {
-    feed.innerHTML = emptyState('Add your Firebase config',
-      'Open <b>firebase-config.js</b> and paste the config object from your Firebase project settings.');
-    statusText.textContent = 'Not configured';
+    loginMsg.className = 'login-msg err';
+    loginMsg.textContent = 'Firebase config missing in firebase-config.js';
     return;
   }
 
   firebase.initializeApp(window.firebaseConfig);
+  const auth = firebase.auth();
   const db = firebase.firestore();
 
-  db.collection('events').orderBy('ts', 'desc').limit(200)
-    .onSnapshot(
+  let events = [], filter = 'all', listenerStarted = false;
+
+  // ---------- auth ----------
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      loginScreen.classList.add('hidden');
+      appScreen.classList.remove('hidden');
+      if (!listenerStarted) { listenerStarted = true; startListener(); }
+    } else {
+      appScreen.classList.add('hidden');
+      loginScreen.classList.remove('hidden');
+    }
+  });
+
+  function creds() {
+    return { email: $('email').value.trim(), pass: $('password').value };
+  }
+  function setMsg(text, ok) { loginMsg.className = 'login-msg ' + (ok ? 'ok' : 'err'); loginMsg.textContent = text; }
+  function friendly(e) {
+    const m = {
+      'auth/invalid-email': 'That email address looks invalid.',
+      'auth/missing-password': 'Enter a password.',
+      'auth/weak-password': 'Password should be at least 6 characters.',
+      'auth/email-already-in-use': 'Account exists — just tap Sign in.',
+      'auth/invalid-credential': 'Wrong email or password.',
+      'auth/wrong-password': 'Wrong password.',
+      'auth/user-not-found': 'No account yet — tap Create my account.',
+      'auth/too-many-requests': 'Too many tries. Wait a moment and retry.'
+    };
+    return m[e.code] || e.message;
+  }
+
+  $('signInBtn').addEventListener('click', () => {
+    const { email, pass } = creds();
+    setMsg('Signing in…', true);
+    auth.signInWithEmailAndPassword(email, pass).catch(e => setMsg(friendly(e), false));
+  });
+  $('createBtn').addEventListener('click', () => {
+    const { email, pass } = creds();
+    setMsg('Creating account…', true);
+    auth.createUserWithEmailAndPassword(email, pass)
+      .then(() => setMsg('Account created — you’re in!', true))
+      .catch(e => setMsg(friendly(e), false));
+  });
+  $('password').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('signInBtn').click(); });
+  $('signOutBtn').addEventListener('click', () => auth.signOut());
+
+  // ---------- data ----------
+  function startListener() {
+    const statusDot = $('statusDot'), statusText = $('statusText'), feed = $('feed');
+    db.collection('events').orderBy('ts', 'desc').limit(200).onSnapshot(
       (snap) => {
-        statusDot.classList.add('live');
-        statusText.textContent = 'Live';
-        const isFirst = events.length === 0;
+        statusDot.classList.add('live'); statusText.textContent = 'Live';
+        const first = events.length === 0;
         events = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        render(isFirst ? null : snap.docChanges());
+        render(first ? null : snap.docChanges());
         updateStats();
       },
       (err) => {
-        statusDot.classList.remove('live');
-        statusText.textContent = 'Connection error';
-        feed.innerHTML = emptyState('Cannot read from Firestore',
-          'Check your Firestore security rules allow read access. Details: ' + err.message);
+        statusDot.classList.remove('live'); statusText.textContent = 'Error';
+        feed.innerHTML = emptyState('Cannot read messages', err.message);
       }
     );
 
-  document.querySelectorAll('.chip').forEach(c => {
-    c.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
       document.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
-      c.classList.add('active');
-      filter = c.dataset.filter;
-      render();
-    });
-  });
+      c.classList.add('active'); filter = c.dataset.filter; render();
+    }));
+  }
 
   function matches(e) {
     if (filter === 'all') return true;
@@ -223,88 +311,44 @@
     if (filter === 'missed') return e.type === 'call_missed';
     return true;
   }
-
   function render(changes) {
+    const feed = $('feed');
     const list = events.filter(matches);
-    if (!list.length) {
-      feed.innerHTML = emptyState('No events yet',
-        'Incoming texts and calls from your phones will appear here in real-time.');
-      return;
-    }
+    if (!list.length) { feed.innerHTML = emptyState('No events yet', 'Incoming texts and calls will appear here in real-time.'); return; }
     const newIds = new Set();
     if (changes) changes.forEach(ch => { if (ch.type === 'added') newIds.add(ch.doc.id); });
     feed.innerHTML = list.map(e => card(e, newIds.has(e.id))).join('');
   }
-
   function card(e, isNew) {
     const t = e.type || 'sms';
-    const cls = t;
     const from = escapeHtml(e.from || 'Unknown');
-    const device = e.device ? `<span class="badge-device">${escapeHtml(e.device)}</span>` : '';
-    let title, body, icon;
-    if (t === 'sms') {
-      icon = icons.sms; title = from;
-      body = `<div class="ev-text">${escapeHtml(e.text || '')}</div>`;
-    } else if (t === 'call_missed') {
-      icon = icons.missed; title = from;
-      body = `<div class="ev-text">Missed call</div>`;
-    } else if (t === 'call_incoming') {
-      icon = icons.call; title = from;
-      body = `<div class="ev-text">Incoming call…</div>`;
-    } else { // call_ended
-      icon = icons.call; title = from;
-      const dur = e.duration ? ` · ${fmtDur(e.duration)}` : '';
-      body = `<div class="ev-text">Call ended${dur}</div>`;
-    }
-    return `<div class="event ${cls} ${isNew ? 'flash' : ''}">
-      <div class="ev-icon">${icon}</div>
-      <div class="ev-body">
-        <div class="ev-top"><span class="ev-from">${title}</span><span class="ev-time">${fmtTime(e.ts)}</span></div>
-        ${body}
-        <div style="margin-top:8px; display:flex; gap:8px; align-items:center;">
-          <span class="ev-tag">${labelFor(t)}</span>${device}
-        </div>
-      </div>
-    </div>`;
+    const device = e.device ? '<span class="badge-device">' + escapeHtml(e.device) + '</span>' : '';
+    let body, icon, title = from;
+    if (t === 'sms') { icon = icons.sms; body = '<div class="ev-text">' + escapeHtml(e.text || '') + '</div>'; }
+    else if (t === 'call_missed') { icon = icons.missed; body = '<div class="ev-text">Missed call</div>'; }
+    else if (t === 'call_incoming') { icon = icons.call; body = '<div class="ev-text">Incoming call…</div>'; }
+    else { icon = icons.call; const dur = e.duration ? ' · ' + fmtDur(e.duration) : ''; body = '<div class="ev-text">Call ended' + dur + '</div>'; }
+    return '<div class="event ' + t + ' ' + (isNew ? 'flash' : '') + '">' +
+      '<div class="ev-icon">' + icon + '</div>' +
+      '<div class="ev-body"><div class="ev-top"><span class="ev-from">' + title + '</span><span class="ev-time">' + fmtTime(e.ts) + '</span></div>' +
+      body + '<div style="margin-top:8px; display:flex; gap:8px; align-items:center;"><span class="ev-tag">' + labelFor(t) + '</span>' + device + '</div></div></div>';
   }
-
   function updateStats() {
-    document.getElementById('stTotal').textContent = events.length;
-    const today = new Date(); today.setHours(0,0,0,0);
-    const todayMs = today.getTime();
-    const sms = events.filter(e => e.type === 'sms' && msOf(e.ts) >= todayMs).length;
-    const calls = events.filter(e => e.type && e.type.startsWith('call') && msOf(e.ts) >= todayMs).length;
-    document.getElementById('stSms').textContent = sms;
-    document.getElementById('stCalls').textContent = calls;
-    const devices = new Set(events.filter(e => msOf(e.ts) >= todayMs).map(e => e.device).filter(Boolean));
-    document.getElementById('stDevices').textContent = devices.size;
+    $('stTotal').textContent = events.length;
+    const today = new Date(); today.setHours(0,0,0,0); const todayMs = today.getTime();
+    $('stSms').textContent = events.filter(e => e.type === 'sms' && msOf(e.ts) >= todayMs).length;
+    $('stCalls').textContent = events.filter(e => e.type && e.type.startsWith('call') && msOf(e.ts) >= todayMs).length;
+    $('stDevices').textContent = new Set(events.filter(e => msOf(e.ts) >= todayMs).map(e => e.device).filter(Boolean)).size;
   }
-
-  // ---- helpers ----
-  function msOf(ts) {
-    if (!ts) return 0;
-    if (typeof ts.toMillis === 'function') return ts.toMillis();
-    if (ts.seconds) return ts.seconds * 1000;
-    return new Date(ts).getTime() || 0;
-  }
-  function fmtTime(ts) {
-    const ms = msOf(ts); if (!ms) return '';
-    const d = new Date(ms), now = Date.now(), diff = (now - ms) / 1000;
-    if (diff < 60) return 'just now';
-    if (diff < 3600) return Math.floor(diff/60) + 'm ago';
-    if (diff < 86400 && d.getDate() === new Date().getDate())
-      return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    return d.toLocaleDateString([], {month:'short', day:'numeric'}) + ' ' +
-           d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-  }
-  function fmtDur(s) { const m = Math.floor(s/60), sec = s%60; return m ? `${m}m ${sec}s` : `${sec}s`; }
-  function labelFor(t) {
-    return { sms:'SMS', call_incoming:'Incoming call', call_missed:'Missed call', call_ended:'Call' }[t] || t;
-  }
+  function msOf(ts){ if(!ts) return 0; if(typeof ts.toMillis==='function') return ts.toMillis(); if(ts.seconds) return ts.seconds*1000; return new Date(ts).getTime()||0; }
+  function fmtTime(ts){ const ms=msOf(ts); if(!ms) return ''; const d=new Date(ms), diff=(Date.now()-ms)/1000;
+    if(diff<60) return 'just now'; if(diff<3600) return Math.floor(diff/60)+'m ago';
+    if(diff<86400 && d.getDate()===new Date().getDate()) return d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+    return d.toLocaleDateString([], {month:'short',day:'numeric'})+' '+d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
+  function fmtDur(s){ const m=Math.floor(s/60), sec=s%60; return m?(m+'m '+sec+'s'):(sec+'s'); }
+  function labelFor(t){ return {sms:'SMS',call_incoming:'Incoming call',call_missed:'Missed call',call_ended:'Call'}[t]||t; }
   function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-  function emptyState(title, sub) {
-    return `<div class="empty">${icons.empty}<div style="font-size:16px;color:var(--text);margin-bottom:6px;font-weight:600;">${title}</div><div>${sub}</div></div>`;
-  }
+  function emptyState(title, sub){ return '<div class="empty">'+icons.empty+'<div style="font-size:16px;color:var(--text);margin-bottom:6px;font-weight:600;">'+title+'</div><div>'+sub+'</div></div>'; }
 
   const icons = {
     sms: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
