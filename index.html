@@ -6,18 +6,9 @@
 <title>Relay · SMS & Call Forwarder</title>
 <style>
   :root {
-    --bg: #0f0e17;
-    --bg-soft: #16151f;
-    --card: rgba(255,255,255,0.04);
-    --card-border: rgba(255,255,255,0.08);
-    --text: #ece8f5;
-    --text-dim: #9b96ad;
-    --accent: #d97757;
-    --accent-2: #7c6bff;
-    --sms: #6ee7b7;
-    --call-in: #7dd3fc;
-    --call-missed: #fb7185;
-    --danger: #fb7185;
+    --bg: #0f0e17; --bg-soft: #16151f; --card: rgba(255,255,255,0.04); --card-border: rgba(255,255,255,0.08);
+    --text: #ece8f5; --text-dim: #9b96ad; --accent: #d97757; --accent-2: #7c6bff;
+    --sms: #6ee7b7; --call-in: #7dd3fc; --call-missed: #fb7185; --danger: #fb7185; --warn: #f5b855;
     --shadow: 0 20px 60px -20px rgba(0,0,0,0.7);
     --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
   }
@@ -26,81 +17,65 @@
   body {
     font-family: var(--font);
     background: radial-gradient(1200px 800px at 15% -10%, #241f3a 0%, transparent 55%),
-                radial-gradient(1000px 700px at 110% 10%, #2a1c26 0%, transparent 50%),
-                var(--bg);
-    color: var(--text);
-    min-height: 100%;
-    overflow-x: hidden;
+                radial-gradient(1000px 700px at 110% 10%, #2a1c26 0%, transparent 50%), var(--bg);
+    color: var(--text); min-height: 100%; overflow-x: hidden;
   }
   .aurora { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
   .blob { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.35; animation: drift 18s ease-in-out infinite; }
   .blob.b1 { width: 420px; height: 420px; background: var(--accent); top: -120px; left: -80px; }
   .blob.b2 { width: 380px; height: 380px; background: var(--accent-2); bottom: -140px; right: -60px; animation-delay: -6s; }
   .blob.b3 { width: 300px; height: 300px; background: #2dd4bf; top: 40%; left: 55%; animation-delay: -11s; opacity: 0.18; }
-  @keyframes drift {
-    0%,100% { transform: translate(0,0) scale(1); }
-    33% { transform: translate(40px,-30px) scale(1.08); }
-    66% { transform: translate(-30px,25px) scale(0.95); }
-  }
+  @keyframes drift { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(40px,-30px) scale(1.08);} 66%{transform:translate(-30px,25px) scale(0.95);} }
 
   .wrap { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
 
-  /* ---------- login ---------- */
-  .login-screen { position: relative; z-index: 1; min-height: 100vh; display: grid; place-items: center; padding: 24px; }
-  .login-card {
-    width: 100%; max-width: 380px; background: var(--card); border: 1px solid var(--card-border);
+  .centered { position: relative; z-index: 1; min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+  .card {
+    width: 100%; max-width: 400px; background: var(--card); border: 1px solid var(--card-border);
     border-radius: 22px; padding: 34px 30px; backdrop-filter: blur(14px); box-shadow: var(--shadow);
     animation: slideIn .5s cubic-bezier(.22,1,.36,1);
   }
-  .login-logo {
-    width: 52px; height: 52px; border-radius: 15px; margin-bottom: 18px;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    display: grid; place-items: center;
-  }
-  .login-logo svg { width: 26px; height: 26px; }
-  .login-card h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
-  .login-card p.sub { font-size: 13px; color: var(--text-dim); margin: 4px 0 22px; }
+  .card-logo { width: 52px; height: 52px; border-radius: 15px; margin-bottom: 18px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2)); display: grid; place-items: center; }
+  .card-logo svg { width: 26px; height: 26px; }
+  .card h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; }
+  .card p.sub { font-size: 13px; color: var(--text-dim); margin: 4px 0 22px; }
   .field { margin-bottom: 14px; }
   .field label { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 6px; }
-  .field input {
-    width: 100%; padding: 12px 14px; border-radius: 12px; font-size: 14px; color: var(--text);
-    background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); outline: none; transition: border .2s;
-  }
+  .field input { width: 100%; padding: 12px 14px; border-radius: 12px; font-size: 14px; color: var(--text);
+    background: rgba(255,255,255,0.05); border: 1px solid var(--card-border); outline: none; transition: border .2s; }
   .field input:focus { border-color: var(--accent); }
-  .btn {
-    width: 100%; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
-    border: none; margin-top: 6px; transition: transform .1s, opacity .2s;
-  }
+  .btn { width: 100%; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;
+    border: none; margin-top: 6px; transition: transform .1s, opacity .2s; }
   .btn:active { transform: scale(.98); }
   .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; }
   .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--card-border); margin-top: 10px; }
   .btn-ghost:hover { color: var(--text); border-color: var(--accent); }
-  .btn[disabled] { opacity: .5; cursor: default; }
   .login-msg { font-size: 13px; margin-top: 14px; min-height: 18px; }
-  .login-msg.err { color: var(--danger); }
-  .login-msg.ok { color: var(--sms); }
+  .login-msg.err { color: var(--danger); } .login-msg.ok { color: var(--sms); }
   .login-hint { font-size: 12px; color: var(--text-dim); margin-top: 16px; line-height: 1.6; text-align: center; }
 
-  /* ---------- header / dashboard ---------- */
+  .wait-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--warn);
+    background: rgba(245,184,85,0.12); padding: 6px 12px; border-radius: 100px; margin-bottom: 16px; }
+  .wait-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--warn); animation: blink 1.3s infinite; }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+  .wait-email { font-size: 13px; color: var(--text); background: rgba(255,255,255,0.05);
+    border: 1px solid var(--card-border); border-radius: 10px; padding: 10px 12px; margin: 6px 0 4px; word-break: break-all; }
+
   header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
   .brand { display: flex; align-items: center; gap: 14px; }
-  .logo {
-    width: 46px; height: 46px; border-radius: 14px;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    display: grid; place-items: center; box-shadow: var(--shadow);
-    animation: pulseLogo 4s ease-in-out infinite;
-  }
-  @keyframes pulseLogo { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-4px);} }
+  .logo { width: 46px; height: 46px; border-radius: 14px; background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: grid; place-items: center; box-shadow: var(--shadow); animation: pulseLogo 4s ease-in-out infinite; }
+  @keyframes pulseLogo { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-4px);} }
   .logo svg { width: 24px; height: 24px; }
   .brand h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.02em; }
   .brand p { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
-
   .header-right { display: flex; align-items: center; gap: 10px; }
   .status { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-dim);
     background: var(--card); border: 1px solid var(--card-border); padding: 8px 14px; border-radius: 100px; }
   .dot { width: 9px; height: 9px; border-radius: 50%; background: #52525b; }
   .dot.live { background: var(--sms); animation: ripple 1.8s infinite; }
-  @keyframes ripple { 0%{ box-shadow: 0 0 0 0 rgba(110,231,183,0.5);} 70%{ box-shadow: 0 0 0 10px rgba(110,231,183,0);} 100%{ box-shadow: 0 0 0 0 rgba(110,231,183,0);} }
+  @keyframes ripple { 0%{box-shadow:0 0 0 0 rgba(110,231,183,0.5);} 70%{box-shadow:0 0 0 10px rgba(110,231,183,0);} 100%{box-shadow:0 0 0 0 rgba(110,231,183,0);} }
   .signout { font-size: 13px; color: var(--text-dim); background: var(--card); border: 1px solid var(--card-border);
     padding: 8px 14px; border-radius: 100px; cursor: pointer; transition: all .2s; }
   .signout:hover { color: var(--text); border-color: var(--danger); }
@@ -109,7 +84,6 @@
   .stat { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; backdrop-filter: blur(8px); }
   .stat .num { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; }
   .stat .lbl { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
-
   .controls { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
   .chip { font-size: 13px; color: var(--text-dim); background: var(--card); border: 1px solid var(--card-border);
     padding: 8px 16px; border-radius: 100px; cursor: pointer; transition: all .2s; user-select: none; }
@@ -117,26 +91,19 @@
   .chip.active { background: var(--accent); color: #1a0f0a; border-color: var(--accent); font-weight: 600; }
 
   .feed { display: flex; flex-direction: column; gap: 12px; }
-  .event {
-    display: flex; gap: 14px; align-items: flex-start;
-    background: var(--card); border: 1px solid var(--card-border);
+  .event { display: flex; gap: 14px; align-items: flex-start; background: var(--card); border: 1px solid var(--card-border);
     border-radius: 16px; padding: 16px 18px; backdrop-filter: blur(8px);
-    animation: slideIn .5s cubic-bezier(.22,1,.36,1); position: relative; overflow: hidden;
-  }
+    animation: slideIn .5s cubic-bezier(.22,1,.36,1); position: relative; overflow: hidden; }
   .event::before { content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background: var(--accent); }
-  .event.sms::before { background: var(--sms); }
-  .event.call_incoming::before { background: var(--call-in); }
-  .event.call_missed::before { background: var(--call-missed); }
-  .event.call_ended::before { background: var(--accent-2); }
-  @keyframes slideIn { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+  .event.sms::before { background: var(--sms); } .event.call_incoming::before { background: var(--call-in); }
+  .event.call_missed::before { background: var(--call-missed); } .event.call_ended::before { background: var(--accent-2); }
+  @keyframes slideIn { from{opacity:0; transform:translateY(14px) scale(.98);} to{opacity:1; transform:none;} }
   .event.flash { animation: slideIn .5s cubic-bezier(.22,1,.36,1), glow 1.6s ease-out; }
-  @keyframes glow { 0%{ box-shadow: 0 0 0 2px var(--accent), var(--shadow);} 100%{ box-shadow: 0 0 0 0 transparent;} }
-
+  @keyframes glow { 0%{box-shadow:0 0 0 2px var(--accent), var(--shadow);} 100%{box-shadow:0 0 0 0 transparent;} }
   .ev-icon { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; flex-shrink: 0; background: rgba(255,255,255,0.06); }
   .ev-icon svg { width: 20px; height: 20px; }
   .sms .ev-icon { color: var(--sms); } .call_incoming .ev-icon { color: var(--call-in); }
   .call_missed .ev-icon { color: var(--call-missed); } .call_ended .ev-icon { color: var(--accent-2); }
-
   .ev-body { flex: 1; min-width: 0; }
   .ev-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 4px; }
   .ev-from { font-weight: 600; font-size: 15px; }
@@ -144,52 +111,53 @@
   .ev-text { font-size: 14px; color: var(--text-dim); word-break: break-word; line-height: 1.5; }
   .ev-tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 6px; margin-top: 8px; background: rgba(255,255,255,0.06); color: var(--text-dim); }
   .badge-device { font-size: 11px; color: var(--accent); background: rgba(217,119,87,0.12); padding: 2px 8px; border-radius: 6px; }
-
   .empty { text-align: center; color: var(--text-dim); padding: 60px 20px; }
   .empty svg { width: 54px; height: 54px; opacity: .4; margin-bottom: 14px; }
   .spinner { width: 30px; height: 30px; border: 3px solid var(--card-border); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; margin: 40px auto; }
+  .spinner.sm { width: 20px; height: 20px; border-width: 2px; margin: 4px auto 0; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .hidden { display: none !important; }
-
   @media (max-width: 560px) { .stats { grid-template-columns: repeat(2,1fr); } .brand h1 { font-size: 18px; } }
 </style>
 </head>
 <body>
 <div class="aurora"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
 
-<!-- ================= LOGIN ================= -->
-<div class="login-screen" id="loginScreen">
-  <div class="login-card">
-    <div class="login-logo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-    </div>
+<!-- ============ LOGIN ============ -->
+<div class="centered" id="loginScreen">
+  <div class="card">
+    <div class="card-logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
     <h1>Relay</h1>
     <p class="sub">Sign in to view your forwarded messages.</p>
-
-    <div class="field">
-      <label for="email">Email</label>
-      <input id="email" type="email" autocomplete="username" placeholder="you@example.com" />
-    </div>
-    <div class="field">
-      <label for="password">Password</label>
-      <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" />
-    </div>
-
+    <div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="username" placeholder="you@example.com" /></div>
+    <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="••••••••" /></div>
     <button class="btn btn-primary" id="signInBtn">Sign in</button>
     <button class="btn btn-ghost" id="createBtn">Create my account</button>
-
     <div class="login-msg" id="loginMsg"></div>
-    <div class="login-hint">First time here? Enter an email + password and tap<br><b>Create my account</b> once. After that, just sign in.</div>
+    <div class="login-hint">First time here? Enter an email + password and tap<br><b>Create my account</b>. An owner then approves you.</div>
   </div>
 </div>
 
-<!-- ================= DASHBOARD ================= -->
+<!-- ============ WAITING FOR APPROVAL ============ -->
+<div class="centered hidden" id="waitScreen">
+  <div class="card">
+    <div class="card-logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+    <div class="wait-badge"><span class="wait-dot"></span>Pending approval</div>
+    <h1>Almost there</h1>
+    <p class="sub">Your account was created. An owner needs to approve it before you can view messages.</p>
+    <div style="font-size:12px;color:var(--text-dim);">Your account</div>
+    <div class="wait-email" id="waitEmail">—</div>
+    <div class="spinner sm"></div>
+    <p style="font-size:12px;color:var(--text-dim);text-align:center;margin-top:14px;line-height:1.6;">This page unlocks automatically the moment you’re approved.</p>
+    <button class="btn btn-ghost" id="waitSignOut">Sign out</button>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
 <div class="wrap hidden" id="appScreen">
   <header>
     <div class="brand">
-      <div class="logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H5.5L4 18z"/><path d="M8 9h8M8 12h5"/></svg>
-      </div>
+      <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v12H5.5L4 18z"/><path d="M8 9h8M8 12h5"/></svg></div>
       <div><h1>Relay</h1><p>SMS &amp; call forwarding · live</p></div>
     </div>
     <div class="header-right">
@@ -197,21 +165,18 @@
       <button class="signout" id="signOutBtn">Sign out</button>
     </div>
   </header>
-
   <div class="stats">
     <div class="stat"><div class="num" id="stTotal">0</div><div class="lbl">Total events</div></div>
     <div class="stat"><div class="num" id="stSms">0</div><div class="lbl">SMS today</div></div>
     <div class="stat"><div class="num" id="stCalls">0</div><div class="lbl">Calls today</div></div>
     <div class="stat"><div class="num" id="stDevices">0</div><div class="lbl">Devices online</div></div>
   </div>
-
   <div class="controls">
     <div class="chip active" data-filter="all">All</div>
     <div class="chip" data-filter="sms">SMS</div>
     <div class="chip" data-filter="call">Calls</div>
     <div class="chip" data-filter="missed">Missed</div>
   </div>
-
   <div class="feed" id="feed"><div class="spinner"></div></div>
 </div>
 
@@ -222,139 +187,106 @@
 <script>
 (function () {
   const $ = (id) => document.getElementById(id);
-  const loginScreen = $('loginScreen'), appScreen = $('appScreen'), loginMsg = $('loginMsg');
+  const loginScreen = $('loginScreen'), waitScreen = $('waitScreen'), appScreen = $('appScreen'), loginMsg = $('loginMsg');
 
   if (!window.firebaseConfig || window.firebaseConfig.projectId === 'YOUR_PROJECT_ID') {
-    loginMsg.className = 'login-msg err';
-    loginMsg.textContent = 'Firebase config missing in firebase-config.js';
-    return;
+    loginMsg.className = 'login-msg err'; loginMsg.textContent = 'Firebase config missing.'; return;
   }
-
   firebase.initializeApp(window.firebaseConfig);
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  let events = [], filter = 'all', listenerStarted = false;
+  let events = [], filter = 'all', listenerStarted = false, userDocUnsub = null;
 
-  // ---------- auth ----------
-  auth.onAuthStateChanged((user) => {
-    if (user) {
-      loginScreen.classList.add('hidden');
-      appScreen.classList.remove('hidden');
-      if (!listenerStarted) { listenerStarted = true; startListener(); }
-    } else {
-      appScreen.classList.add('hidden');
-      loginScreen.classList.remove('hidden');
-    }
+  function show(el) { [loginScreen, waitScreen, appScreen].forEach(s => s.classList.add('hidden')); el.classList.remove('hidden'); }
+
+  auth.onAuthStateChanged(async (user) => {
+    if (userDocUnsub) { userDocUnsub(); userDocUnsub = null; }
+    if (!user) { show(loginScreen); return; }
+    // ensure this user has a record (created pending on first login)
+    const ref = db.collection('users').doc(user.uid);
+    try {
+      const snap = await ref.get();
+      if (!snap.exists) {
+        await ref.set({ email: user.email, approved: false, requestedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      }
+    } catch (e) { /* read/create may be denied briefly; snapshot below still governs UI */ }
+    // live-watch approval status
+    userDocUnsub = ref.onSnapshot((doc) => {
+      const approved = doc.exists && doc.data() && doc.data().approved === true;
+      if (approved) {
+        show(appScreen);
+        if (!listenerStarted) { listenerStarted = true; startListener(); }
+      } else {
+        $('waitEmail').textContent = user.email || user.uid;
+        show(waitScreen);
+      }
+    }, () => { $('waitEmail').textContent = user.email || user.uid; show(waitScreen); });
   });
 
-  function creds() {
-    return { email: $('email').value.trim(), pass: $('password').value };
-  }
-  function setMsg(text, ok) { loginMsg.className = 'login-msg ' + (ok ? 'ok' : 'err'); loginMsg.textContent = text; }
+  function creds() { return { email: $('email').value.trim(), pass: $('password').value }; }
+  function setMsg(t, ok) { loginMsg.className = 'login-msg ' + (ok ? 'ok' : 'err'); loginMsg.textContent = t; }
   function friendly(e) {
-    const m = {
-      'auth/invalid-email': 'That email address looks invalid.',
-      'auth/missing-password': 'Enter a password.',
-      'auth/weak-password': 'Password should be at least 6 characters.',
-      'auth/email-already-in-use': 'Account exists — just tap Sign in.',
-      'auth/invalid-credential': 'Wrong email or password.',
-      'auth/wrong-password': 'Wrong password.',
-      'auth/user-not-found': 'No account yet — tap Create my account.',
-      'auth/too-many-requests': 'Too many tries. Wait a moment and retry.'
-    };
+    const m = { 'auth/invalid-email':'That email looks invalid.','auth/missing-password':'Enter a password.',
+      'auth/weak-password':'Password must be at least 6 characters.','auth/email-already-in-use':'Account exists — just tap Sign in.',
+      'auth/invalid-credential':'Wrong email or password.','auth/wrong-password':'Wrong password.',
+      'auth/user-not-found':'No account yet — tap Create my account.','auth/too-many-requests':'Too many tries. Wait and retry.' };
     return m[e.code] || e.message;
   }
+  $('signInBtn').addEventListener('click', () => { const {email,pass}=creds(); setMsg('Signing in…',true);
+    auth.signInWithEmailAndPassword(email,pass).catch(e=>setMsg(friendly(e),false)); });
+  $('createBtn').addEventListener('click', () => { const {email,pass}=creds(); setMsg('Creating account…',true);
+    auth.createUserWithEmailAndPassword(email,pass).then(()=>setMsg('Account created — waiting for approval.',true)).catch(e=>setMsg(friendly(e),false)); });
+  $('password').addEventListener('keydown', (e)=>{ if(e.key==='Enter') $('signInBtn').click(); });
+  $('signOutBtn').addEventListener('click', ()=>auth.signOut());
+  $('waitSignOut').addEventListener('click', ()=>auth.signOut());
 
-  $('signInBtn').addEventListener('click', () => {
-    const { email, pass } = creds();
-    setMsg('Signing in…', true);
-    auth.signInWithEmailAndPassword(email, pass).catch(e => setMsg(friendly(e), false));
-  });
-  $('createBtn').addEventListener('click', () => {
-    const { email, pass } = creds();
-    setMsg('Creating account…', true);
-    auth.createUserWithEmailAndPassword(email, pass)
-      .then(() => setMsg('Account created — you’re in!', true))
-      .catch(e => setMsg(friendly(e), false));
-  });
-  $('password').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('signInBtn').click(); });
-  $('signOutBtn').addEventListener('click', () => auth.signOut());
-
-  // ---------- data ----------
   function startListener() {
     const statusDot = $('statusDot'), statusText = $('statusText'), feed = $('feed');
-    db.collection('events').orderBy('ts', 'desc').limit(200).onSnapshot(
-      (snap) => {
-        statusDot.classList.add('live'); statusText.textContent = 'Live';
-        const first = events.length === 0;
-        events = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        render(first ? null : snap.docChanges());
-        updateStats();
-      },
-      (err) => {
-        statusDot.classList.remove('live'); statusText.textContent = 'Error';
-        feed.innerHTML = emptyState('Cannot read messages', err.message);
-      }
+    db.collection('events').orderBy('ts','desc').limit(200).onSnapshot(
+      (snap) => { statusDot.classList.add('live'); statusText.textContent='Live';
+        const first = events.length===0; events = snap.docs.map(d=>({id:d.id,...d.data()}));
+        render(first?null:snap.docChanges()); updateStats(); },
+      (err) => { statusDot.classList.remove('live'); statusText.textContent='Error';
+        feed.innerHTML = emptyState('Cannot read messages', err.message); }
     );
-
     document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
-      document.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
-      c.classList.add('active'); filter = c.dataset.filter; render();
-    }));
+      document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+      c.classList.add('active'); filter=c.dataset.filter; render(); }));
   }
-
-  function matches(e) {
-    if (filter === 'all') return true;
-    if (filter === 'sms') return e.type === 'sms';
-    if (filter === 'call') return e.type && e.type.startsWith('call');
-    if (filter === 'missed') return e.type === 'call_missed';
-    return true;
-  }
-  function render(changes) {
-    const feed = $('feed');
-    const list = events.filter(matches);
-    if (!list.length) { feed.innerHTML = emptyState('No events yet', 'Incoming texts and calls will appear here in real-time.'); return; }
-    const newIds = new Set();
-    if (changes) changes.forEach(ch => { if (ch.type === 'added') newIds.add(ch.doc.id); });
-    feed.innerHTML = list.map(e => card(e, newIds.has(e.id))).join('');
-  }
-  function card(e, isNew) {
-    const t = e.type || 'sms';
-    const from = escapeHtml(e.from || 'Unknown');
-    const device = e.device ? '<span class="badge-device">' + escapeHtml(e.device) + '</span>' : '';
-    let body, icon, title = from;
-    if (t === 'sms') { icon = icons.sms; body = '<div class="ev-text">' + escapeHtml(e.text || '') + '</div>'; }
-    else if (t === 'call_missed') { icon = icons.missed; body = '<div class="ev-text">Missed call</div>'; }
-    else if (t === 'call_incoming') { icon = icons.call; body = '<div class="ev-text">Incoming call…</div>'; }
-    else { icon = icons.call; const dur = e.duration ? ' · ' + fmtDur(e.duration) : ''; body = '<div class="ev-text">Call ended' + dur + '</div>'; }
-    return '<div class="event ' + t + ' ' + (isNew ? 'flash' : '') + '">' +
-      '<div class="ev-icon">' + icon + '</div>' +
-      '<div class="ev-body"><div class="ev-top"><span class="ev-from">' + title + '</span><span class="ev-time">' + fmtTime(e.ts) + '</span></div>' +
-      body + '<div style="margin-top:8px; display:flex; gap:8px; align-items:center;"><span class="ev-tag">' + labelFor(t) + '</span>' + device + '</div></div></div>';
-  }
-  function updateStats() {
-    $('stTotal').textContent = events.length;
-    const today = new Date(); today.setHours(0,0,0,0); const todayMs = today.getTime();
-    $('stSms').textContent = events.filter(e => e.type === 'sms' && msOf(e.ts) >= todayMs).length;
-    $('stCalls').textContent = events.filter(e => e.type && e.type.startsWith('call') && msOf(e.ts) >= todayMs).length;
-    $('stDevices').textContent = new Set(events.filter(e => msOf(e.ts) >= todayMs).map(e => e.device).filter(Boolean)).size;
-  }
-  function msOf(ts){ if(!ts) return 0; if(typeof ts.toMillis==='function') return ts.toMillis(); if(ts.seconds) return ts.seconds*1000; return new Date(ts).getTime()||0; }
-  function fmtTime(ts){ const ms=msOf(ts); if(!ms) return ''; const d=new Date(ms), diff=(Date.now()-ms)/1000;
-    if(diff<60) return 'just now'; if(diff<3600) return Math.floor(diff/60)+'m ago';
-    if(diff<86400 && d.getDate()===new Date().getDate()) return d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-    return d.toLocaleDateString([], {month:'short',day:'numeric'})+' '+d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
+  function matches(e){ if(filter==='all')return true; if(filter==='sms')return e.type==='sms';
+    if(filter==='call')return e.type&&e.type.startsWith('call'); if(filter==='missed')return e.type==='call_missed'; return true; }
+  function render(changes){ const feed=$('feed'); const list=events.filter(matches);
+    if(!list.length){ feed.innerHTML=emptyState('No events yet','Incoming texts and calls will appear here in real-time.'); return; }
+    const newIds=new Set(); if(changes) changes.forEach(ch=>{ if(ch.type==='added') newIds.add(ch.doc.id); });
+    feed.innerHTML=list.map(e=>card(e,newIds.has(e.id))).join(''); }
+  function card(e,isNew){ const t=e.type||'sms'; const from=escapeHtml(e.from||'Unknown');
+    const device=e.device?'<span class="badge-device">'+escapeHtml(e.device)+'</span>':''; let body,icon;
+    if(t==='sms'){icon=icons.sms; body='<div class="ev-text">'+escapeHtml(e.text||'')+'</div>';}
+    else if(t==='call_missed'){icon=icons.missed; body='<div class="ev-text">Missed call</div>';}
+    else if(t==='call_incoming'){icon=icons.call; body='<div class="ev-text">Incoming call…</div>';}
+    else {icon=icons.call; const dur=e.duration?' · '+fmtDur(e.duration):''; body='<div class="ev-text">Call ended'+dur+'</div>';}
+    return '<div class="event '+t+' '+(isNew?'flash':'')+'"><div class="ev-icon">'+icon+'</div><div class="ev-body">'+
+      '<div class="ev-top"><span class="ev-from">'+from+'</span><span class="ev-time">'+fmtTime(e.ts)+'</span></div>'+body+
+      '<div style="margin-top:8px;display:flex;gap:8px;align-items:center;"><span class="ev-tag">'+labelFor(t)+'</span>'+device+'</div></div></div>'; }
+  function updateStats(){ $('stTotal').textContent=events.length; const today=new Date(); today.setHours(0,0,0,0); const t=today.getTime();
+    $('stSms').textContent=events.filter(e=>e.type==='sms'&&msOf(e.ts)>=t).length;
+    $('stCalls').textContent=events.filter(e=>e.type&&e.type.startsWith('call')&&msOf(e.ts)>=t).length;
+    $('stDevices').textContent=new Set(events.filter(e=>msOf(e.ts)>=t).map(e=>e.device).filter(Boolean)).size; }
+  function msOf(ts){ if(!ts)return 0; if(typeof ts.toMillis==='function')return ts.toMillis(); if(ts.seconds)return ts.seconds*1000; return new Date(ts).getTime()||0; }
+  function fmtTime(ts){ const ms=msOf(ts); if(!ms)return ''; const d=new Date(ms), diff=(Date.now()-ms)/1000;
+    if(diff<60)return 'just now'; if(diff<3600)return Math.floor(diff/60)+'m ago';
+    if(diff<86400&&d.getDate()===new Date().getDate())return d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    return d.toLocaleDateString([],{month:'short',day:'numeric'})+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
   function fmtDur(s){ const m=Math.floor(s/60), sec=s%60; return m?(m+'m '+sec+'s'):(sec+'s'); }
   function labelFor(t){ return {sms:'SMS',call_incoming:'Incoming call',call_missed:'Missed call',call_ended:'Call'}[t]||t; }
-  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-  function emptyState(title, sub){ return '<div class="empty">'+icons.empty+'<div style="font-size:16px;color:var(--text);margin-bottom:6px;font-weight:600;">'+title+'</div><div>'+sub+'</div></div>'; }
-
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function emptyState(title,sub){ return '<div class="empty">'+icons.empty+'<div style="font-size:16px;color:var(--text);margin-bottom:6px;font-weight:600;">'+title+'</div><div>'+sub+'</div></div>'; }
   const icons = {
-    sms: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
-    call: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
-    missed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/><line x1="23" y1="1" x2="17" y2="7"/><line x1="17" y1="1" x2="23" y2="7"/></svg>',
-    empty: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
+    sms:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+    call:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+    missed:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/><line x1="23" y1="1" x2="17" y2="7"/><line x1="17" y1="1" x2="23" y2="7"/></svg>',
+    empty:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
   };
 })();
 </script>
