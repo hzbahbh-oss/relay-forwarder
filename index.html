@@ -7,11 +7,10 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%2314e0c8'/%3E%3Cpath d='M5 6.5h14v9H7.5L5 18z' fill='none' stroke='%23071a17' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E" />
 <style>
   :root {
-    --bg: #08090c; --bg-2:#0b0d11; --panel:#101319; --panel-2:#141821; --border:rgba(255,255,255,0.07);
-    --border-2:rgba(255,255,255,0.12);
+    --bg:#08090c; --bg-2:#0b0d11; --panel:#101319; --panel-2:#141821; --border:rgba(255,255,255,0.07); --border-2:rgba(255,255,255,0.12);
     --text:#eef1f5; --dim:#8b929e; --faint:#5c626d;
     --accent:#19e3cf; --accent-ink:#04211d; --accent-soft:rgba(25,227,207,0.12);
-    --green:#34d399; --blue:#38bdf8; --red:#f87171; --amber:#fbbf24; --violet:#a78bfa;
+    --green:#34d399; --blue:#38bdf8; --red:#f87171; --amber:#fbbf24;
     --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Monaco,"Cascadia Code",monospace;
     --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
     --shadow:0 24px 60px -28px rgba(0,0,0,0.9);
@@ -19,21 +18,16 @@
   * { box-sizing:border-box; margin:0; padding:0; }
   html,body { height:100%; }
   body { font-family:var(--sans); background:var(--bg); color:var(--text); min-height:100%;
-    background-image: radial-gradient(700px 420px at 82% -8%, rgba(25,227,207,0.08), transparent 60%),
-                      radial-gradient(600px 400px at 0% 0%, rgba(56,189,248,0.05), transparent 55%);
+    background-image:radial-gradient(700px 420px at 82% -8%,rgba(25,227,207,0.08),transparent 60%),radial-gradient(600px 400px at 0% 0%,rgba(56,189,248,0.05),transparent 55%);
     -webkit-font-smoothing:antialiased; }
   .mono { font-family:var(--mono); text-transform:uppercase; letter-spacing:0.13em; font-size:11px; }
   a { color:inherit; text-decoration:none; }
-
   .wrap { max-width:900px; margin:0 auto; padding:20px 20px 70px; }
   .centered { min-height:100vh; display:grid; place-items:center; padding:24px; }
 
-  /* ---- top nav ---- */
-  .nav { display:flex; align-items:center; justify-content:space-between; gap:14px;
-    padding:14px 4px; margin-bottom:8px; border-bottom:1px solid var(--border); flex-wrap:wrap; }
+  .nav { display:flex; align-items:center; justify-content:space-between; gap:14px; padding:14px 4px; border-bottom:1px solid var(--border); flex-wrap:wrap; }
   .logo-wrap { display:flex; align-items:center; gap:11px; }
-  .logo { width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,var(--accent),#0fb9a6);
-    display:grid; place-items:center; box-shadow:0 0 20px rgba(25,227,207,0.35); }
+  .logo { width:34px; height:34px; border-radius:9px; background:linear-gradient(135deg,var(--accent),#0fb9a6); display:grid; place-items:center; box-shadow:0 0 20px rgba(25,227,207,0.35); }
   .logo svg { width:19px; height:19px; }
   .logo-wrap b { font-size:17px; letter-spacing:0.14em; font-weight:700; }
   .nav-right { display:flex; align-items:center; gap:9px; flex-wrap:wrap; }
@@ -42,115 +36,119 @@
   .ldot.on { background:var(--green); box-shadow:0 0 8px var(--green); animation:pulse 1.8s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.35;} }
 
-  .btn { font-family:var(--sans); border:none; cursor:pointer; border-radius:10px; font-size:14px; font-weight:600;
-    padding:11px 16px; transition:transform .1s, background .2s, border-color .2s, color .2s; }
+  .tabs { display:flex; gap:4px; margin:16px 0 18px; background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:4px; width:fit-content; }
+  .tab { padding:9px 18px; border-radius:9px; font-size:14px; color:var(--dim); cursor:pointer; transition:all .18s; user-select:none; display:inline-flex; align-items:center; gap:8px; }
+  .tab:hover { color:var(--text); }
+  .tab.active { background:var(--accent); color:var(--accent-ink); font-weight:600; }
+  .tab svg { width:15px; height:15px; }
+
+  .btn { font-family:var(--sans); border:none; cursor:pointer; border-radius:10px; font-size:14px; font-weight:600; padding:11px 16px; transition:transform .1s,background .2s,border-color .2s,color .2s; }
   .btn:active { transform:scale(.98); }
-  .btn-primary { background:var(--accent); color:var(--accent-ink); }
-  .btn-primary:hover { background:#2ff0dc; }
-  .btn-outline { background:transparent; color:var(--text); border:1px solid var(--border-2); }
-  .btn-outline:hover { border-color:var(--accent); color:var(--accent); }
+  .btn-primary { background:var(--accent); color:var(--accent-ink); } .btn-primary:hover { background:#2ff0dc; }
+  .btn-outline { background:transparent; color:var(--text); border:1px solid var(--border-2); } .btn-outline:hover { border-color:var(--accent); color:var(--accent); }
   .btn-block { width:100%; margin-top:8px; }
   .btn[disabled]{ opacity:.5; cursor:default; }
-
-  .chip-btn { display:inline-flex; align-items:center; gap:7px; padding:8px 13px; border-radius:9px;
-    background:var(--panel); border:1px solid var(--border); color:var(--dim); font-size:13px; cursor:pointer;
-    transition:all .2s; user-select:none; }
+  .chip-btn { display:inline-flex; align-items:center; gap:7px; padding:8px 13px; border-radius:9px; background:var(--panel); border:1px solid var(--border); color:var(--dim); font-size:13px; cursor:pointer; transition:all .2s; user-select:none; }
   .chip-btn:hover { color:var(--text); border-color:var(--border-2); }
   .chip-btn.on { color:var(--accent); border-color:rgba(25,227,207,0.4); background:var(--accent-soft); }
   .chip-btn svg { width:15px; height:15px; }
   .chip-btn.dl { color:var(--accent); border-color:rgba(25,227,207,0.35); }
 
-  /* ---- auth cards ---- */
-  .card { width:100%; max-width:400px; background:var(--panel); border:1px solid var(--border);
-    border-radius:18px; padding:32px 30px; box-shadow:var(--shadow); }
-  .card .logo { width:46px; height:46px; border-radius:12px; margin-bottom:16px; }
-  .card .logo svg { width:24px; height:24px; }
+  .card { width:100%; max-width:400px; background:var(--panel); border:1px solid var(--border); border-radius:18px; padding:32px 30px; box-shadow:var(--shadow); }
+  .card .logo { width:46px; height:46px; border-radius:12px; margin-bottom:16px; } .card .logo svg { width:24px; height:24px; }
   .card .kicker { color:var(--accent); margin-bottom:8px; }
-  .card h1 { font-size:23px; font-weight:700; letter-spacing:-0.01em; }
+  .card h1 { font-size:23px; font-weight:700; }
   .card p.sub { font-size:13px; color:var(--dim); margin:6px 0 22px; line-height:1.5; }
   .field { margin-bottom:13px; }
   .field label { display:block; color:var(--faint); margin-bottom:6px; }
-  .field input { width:100%; padding:12px 14px; border-radius:10px; font-size:14px; color:var(--text);
-    background:var(--bg-2); border:1px solid var(--border); outline:none; transition:border .2s; font-family:var(--sans); }
+  .field input { width:100%; padding:12px 14px; border-radius:10px; font-size:14px; color:var(--text); background:var(--bg-2); border:1px solid var(--border); outline:none; transition:border .2s; font-family:var(--sans); }
   .field input:focus { border-color:var(--accent); }
-  .msg { font-size:13px; margin-top:13px; min-height:18px; }
-  .msg.err { color:var(--red); } .msg.ok { color:var(--green); }
-  .hint { color:var(--faint); margin-top:16px; line-height:1.7; text-align:center; }
-  .hint b { color:var(--dim); }
-  .wait-badge { display:inline-flex; align-items:center; gap:8px; color:var(--amber);
-    background:rgba(251,191,36,0.1); padding:6px 12px; border-radius:8px; margin-bottom:14px; }
+  .msg { font-size:13px; margin-top:13px; min-height:18px; } .msg.err { color:var(--red); } .msg.ok { color:var(--green); }
+  .hint { color:var(--faint); margin-top:16px; line-height:1.7; text-align:center; } .hint b { color:var(--dim); }
+  .wait-badge { display:inline-flex; align-items:center; gap:8px; color:var(--amber); background:rgba(251,191,36,0.1); padding:6px 12px; border-radius:8px; margin-bottom:14px; }
   .wait-dot { width:7px; height:7px; border-radius:50%; background:var(--amber); animation:pulse 1.3s infinite; }
-  .wait-email { font-size:13px; background:var(--bg-2); border:1px solid var(--border); border-radius:9px;
-    padding:10px 12px; margin:6px 0; word-break:break-all; font-family:var(--mono); }
+  .wait-email { font-size:13px; background:var(--bg-2); border:1px solid var(--border); border-radius:9px; padding:10px 12px; margin:6px 0; word-break:break-all; font-family:var(--mono); }
 
-  /* ---- stats ---- */
-  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:16px 0; }
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:0 0 16px; }
   .stat { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:15px 16px; }
-  .stat .num { font-size:25px; font-weight:700; letter-spacing:-0.02em; }
-  .stat .lbl { color:var(--faint); margin-top:3px; }
-  .stat.accent .num { color:var(--accent); }
+  .stat .num { font-size:25px; font-weight:700; } .stat .lbl { color:var(--faint); margin-top:3px; } .stat.accent .num { color:var(--accent); }
 
-  /* ---- toolbar ---- */
   .toolbar { display:flex; gap:9px; align-items:center; margin-bottom:10px; flex-wrap:wrap; }
-  .search { flex:1; min-width:200px; display:flex; align-items:center; gap:9px; background:var(--panel);
-    border:1px solid var(--border); border-radius:10px; padding:9px 13px; }
-  .search:focus-within { border-color:var(--border-2); }
+  .search { flex:1; min-width:200px; display:flex; align-items:center; gap:9px; background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:9px 13px; }
   .search svg { width:16px; height:16px; color:var(--faint); flex-shrink:0; }
   .search input { flex:1; background:transparent; border:none; outline:none; color:var(--text); font-size:14px; font-family:var(--sans); }
   .search input::placeholder { color:var(--faint); }
   .segment { display:inline-flex; background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:3px; gap:2px; }
   .seg { padding:7px 13px; border-radius:8px; font-size:13px; color:var(--dim); cursor:pointer; transition:all .18s; user-select:none; }
-  .seg:hover { color:var(--text); }
-  .seg.active { background:var(--accent); color:var(--accent-ink); font-weight:600; }
+  .seg:hover { color:var(--text); } .seg.active { background:var(--accent); color:var(--accent-ink); font-weight:600; }
   .count-note { color:var(--faint); margin:2px 0 12px 2px; }
 
-  /* ---- feed / activity panel ---- */
   .panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; overflow:hidden; }
   .panel-head { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; border-bottom:1px solid var(--border); }
   .panel-head .mono { color:var(--dim); display:inline-flex; align-items:center; gap:8px; }
   .feed { display:flex; flex-direction:column; }
-  .row { display:flex; gap:13px; align-items:center; padding:14px 18px; border-bottom:1px solid var(--border);
-    transition:background .18s; animation:slideIn .45s cubic-bezier(.22,1,.36,1); }
-  .row:last-child { border-bottom:none; }
-  .row:hover { background:var(--panel-2); }
+  .row { display:flex; gap:13px; align-items:center; padding:14px 18px; border-bottom:1px solid var(--border); transition:background .18s; animation:slideIn .45s cubic-bezier(.22,1,.36,1); }
+  .row:last-child { border-bottom:none; } .row:hover { background:var(--panel-2); }
   @keyframes slideIn { from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
-  .row.flash { animation:slideIn .45s cubic-bezier(.22,1,.36,1), flash 1.8s ease-out; }
+  .row.flash { animation:slideIn .45s cubic-bezier(.22,1,.36,1),flash 1.8s ease-out; }
   @keyframes flash { 0%{background:var(--accent-soft);} 100%{background:transparent;} }
-  .avatar { width:42px; height:42px; border-radius:50%; display:grid; place-items:center; flex-shrink:0;
-    font-size:14px; font-weight:700; color:#06131a; font-family:var(--mono); letter-spacing:0; }
+  .avatar { width:42px; height:42px; border-radius:50%; display:grid; place-items:center; flex-shrink:0; font-size:14px; font-weight:700; color:#06131a; font-family:var(--mono); }
   .row-main { flex:1; min-width:0; }
   .row-top { display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
   .name { font-weight:600; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .hm { font-family:var(--mono); font-size:12px; color:var(--dim); letter-spacing:0.06em; white-space:nowrap; }
+  .subnum { font-family:var(--mono); font-size:11px; color:var(--faint); margin-top:1px; }
+  .hm { font-family:var(--mono); font-size:12px; color:var(--dim); white-space:nowrap; }
   .status { display:inline-flex; align-items:center; gap:6px; margin-top:3px; }
   .status .st { font-family:var(--mono); font-size:11px; letter-spacing:0.1em; }
   .st.in { color:var(--green); } .st.miss { color:var(--red); } .st.out { color:var(--blue); } .st.sms { color:var(--accent); }
-  .sms-text { color:var(--dim); font-size:13.5px; margin-top:3px; line-height:1.45; word-break:break-word;
-    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+  .sms-text { color:var(--dim); font-size:13.5px; margin-top:3px; line-height:1.45; word-break:break-word; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
   .row-meta { display:flex; align-items:center; gap:9px; margin-top:7px; flex-wrap:wrap; }
-  .badge { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; padding:3px 8px; border-radius:6px;
-    background:var(--bg-2); border:1px solid var(--border); color:var(--faint); }
+  .badge { font-family:var(--mono); font-size:10px; letter-spacing:0.1em; padding:3px 8px; border-radius:6px; background:var(--bg-2); border:1px solid var(--border); color:var(--faint); }
   .badge.dev { color:var(--accent); border-color:rgba(25,227,207,0.3); }
-  .when { font-family:var(--mono); font-size:10px; letter-spacing:0.06em; color:var(--faint); }
+  .when { font-family:var(--mono); font-size:10px; color:var(--faint); }
   .rt { font-family:var(--mono); font-size:11px; color:var(--faint); white-space:nowrap; }
   .dur { font-family:var(--mono); font-size:11px; color:var(--dim); white-space:nowrap; }
   .right-col { text-align:right; flex-shrink:0; display:flex; flex-direction:column; align-items:flex-end; gap:3px; }
-  .otp { font-family:var(--mono); font-size:10px; font-weight:700; letter-spacing:0.08em; color:var(--accent);
-    background:var(--accent-soft); border:1px solid rgba(25,227,207,0.35); padding:3px 9px; border-radius:6px; cursor:pointer;
-    display:inline-flex; align-items:center; gap:5px; }
-  .otp:hover { background:rgba(25,227,207,0.22); }
-  .otp svg { width:11px; height:11px; }
+  .otp { font-family:var(--mono); font-size:10px; font-weight:700; color:var(--accent); background:var(--accent-soft); border:1px solid rgba(25,227,207,0.35); padding:3px 9px; border-radius:6px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; }
+  .otp:hover { background:rgba(25,227,207,0.22); } .otp svg { width:11px; height:11px; }
+  .link-mini { font-family:var(--mono); font-size:10px; color:var(--faint); cursor:pointer; border:1px solid var(--border); padding:3px 8px; border-radius:6px; }
+  .link-mini:hover { color:var(--accent); border-color:rgba(25,227,207,0.3); }
+
+  /* contacts */
+  .form-row { display:flex; gap:9px; flex-wrap:wrap; margin-bottom:14px; }
+  .form-row input { flex:1; min-width:150px; padding:11px 13px; border-radius:10px; font-size:14px; color:var(--text); background:var(--panel); border:1px solid var(--border); outline:none; font-family:var(--sans); }
+  .form-row input:focus { border-color:var(--accent); }
+  .c-row { display:flex; align-items:center; gap:13px; padding:13px 18px; border-bottom:1px solid var(--border); }
+  .c-row:last-child { border-bottom:none; }
+  .c-main { flex:1; min-width:0; } .c-name { font-weight:600; font-size:15px; } .c-num { font-family:var(--mono); font-size:11px; color:var(--faint); margin-top:2px; }
+  .c-note { font-size:12px; color:var(--dim); margin-top:2px; }
+  .c-actions { display:flex; gap:6px; }
+
+  /* verify upi */
+  .verify-card { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:24px; }
+  .verify-card h2 { font-size:18px; font-weight:700; margin-bottom:4px; }
+  .verify-card p { color:var(--dim); font-size:13px; margin-bottom:18px; line-height:1.55; }
+  .vpa-input { display:flex; gap:9px; flex-wrap:wrap; }
+  .vpa-input input { flex:1; min-width:200px; padding:13px 15px; border-radius:11px; font-size:15px; color:var(--text); background:var(--bg-2); border:1px solid var(--border); outline:none; font-family:var(--mono); }
+  .vpa-input input:focus { border-color:var(--accent); }
+  .result { margin-top:18px; border-radius:12px; border:1px solid var(--border); padding:18px; display:none; }
+  .result.show { display:block; animation:slideIn .4s ease; }
+  .result .rlabel { color:var(--faint); margin-bottom:6px; }
+  .result .rname { font-size:22px; font-weight:700; }
+  .result .rstatus { font-family:var(--mono); font-size:11px; margin-top:8px; padding:3px 9px; border-radius:6px; display:inline-block; }
+  .result.valid { border-color:rgba(52,211,153,0.35); } .result.valid .rstatus { color:var(--green); background:rgba(52,211,153,0.12); }
+  .result.invalid { border-color:rgba(248,113,113,0.35); } .result.invalid .rstatus { color:var(--red); background:rgba(248,113,113,0.12); }
+  .setup-note { margin-top:16px; background:var(--bg-2); border:1px solid var(--border); border-radius:12px; padding:16px 18px; font-size:13px; color:var(--dim); line-height:1.7; }
+  .setup-note b { color:var(--text); } .setup-note code { font-family:var(--mono); color:var(--accent); font-size:12px; }
 
   .empty { text-align:center; color:var(--dim); padding:56px 20px; }
   .empty svg { width:48px; height:48px; opacity:.35; margin-bottom:12px; }
   .spinner { width:28px; height:28px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; margin:44px auto; }
-  .spinner.sm { width:20px; height:20px; border-width:2px; margin:6px auto 0; }
+  .spinner.sm { width:18px; height:18px; border-width:2px; margin:0; display:inline-block; vertical-align:middle; }
   @keyframes spin { to{ transform:rotate(360deg);} }
   .hidden { display:none !important; }
-  footer { text-align:center; color:var(--faint); font-size:12px; margin-top:28px; line-height:1.8; }
-  footer b { color:var(--dim); }
-  footer .mono { color:var(--faint); }
-  @media (max-width:560px){ .stats{ grid-template-columns:repeat(2,1fr);} .name{ font-size:14px;} }
+  footer { text-align:center; color:var(--faint); font-size:12px; margin-top:28px; line-height:1.8; } footer b { color:var(--dim); }
+  @media (max-width:560px){ .stats{ grid-template-columns:repeat(2,1fr);} }
 </style>
 </head>
 <body>
@@ -180,7 +178,7 @@
     <p class="sub">Your account was created. An owner needs to approve it before you can view messages.</p>
     <div class="mono" style="color:var(--faint)">Your account</div>
     <div class="wait-email" id="waitEmail">—</div>
-    <div class="spinner sm"></div>
+    <div class="spinner sm" style="margin:6px auto 0;display:block"></div>
     <p style="font-size:12px;color:var(--dim);text-align:center;margin-top:14px;line-height:1.6;">This page unlocks automatically the moment you’re approved.</p>
     <button class="btn btn-outline btn-block" id="waitSignOut">Sign out</button>
   </div>
@@ -194,7 +192,7 @@
       <b>RELAY</b>
     </div>
     <div class="nav-right">
-      <a class="chip-btn dl" id="dlBtn" href="https://github.com/hzbahbh-oss/relay-forwarder/releases/download/latest/relay-forwarder.apk">
+      <a class="chip-btn dl" href="https://github.com/hzbahbh-oss/relay-forwarder/releases/download/latest/relay-forwarder.apk">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
         Get the app
       </a>
@@ -207,38 +205,75 @@
     </div>
   </div>
 
-  <div class="stats">
-    <div class="stat accent"><div class="num" id="stTotal">0</div><div class="lbl mono">Total events</div></div>
-    <div class="stat"><div class="num" id="stSms">0</div><div class="lbl mono">SMS today</div></div>
-    <div class="stat"><div class="num" id="stCalls">0</div><div class="lbl mono">Calls today</div></div>
-    <div class="stat"><div class="num" id="stDevices">0</div><div class="lbl mono">Devices online</div></div>
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-view="activity"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>Activity</div>
+    <div class="tab" data-view="contacts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>Contacts</div>
+    <div class="tab" data-view="upi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>Verify UPI</div>
   </div>
 
-  <div class="toolbar">
-    <div class="search">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input id="search" type="text" placeholder="Search by number, name, or message…" />
+  <!-- ACTIVITY -->
+  <div id="view-activity">
+    <div class="stats">
+      <div class="stat accent"><div class="num" id="stTotal">0</div><div class="lbl mono">Total events</div></div>
+      <div class="stat"><div class="num" id="stSms">0</div><div class="lbl mono">SMS today</div></div>
+      <div class="stat"><div class="num" id="stCalls">0</div><div class="lbl mono">Calls today</div></div>
+      <div class="stat"><div class="num" id="stDevices">0</div><div class="lbl mono">Devices online</div></div>
     </div>
-    <div class="segment" id="filterSeg">
-      <div class="seg active" data-filter="all">All</div>
-      <div class="seg" data-filter="sms">SMS</div>
-      <div class="seg" data-filter="call">Calls</div>
-      <div class="seg" data-filter="missed">Missed</div>
+    <div class="toolbar">
+      <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="search" type="text" placeholder="Search by number, name, or message…" /></div>
+      <div class="segment" id="filterSeg">
+        <div class="seg active" data-filter="all">All</div><div class="seg" data-filter="sms">SMS</div>
+        <div class="seg" data-filter="call">Calls</div><div class="seg" data-filter="missed">Missed</div>
+      </div>
+    </div>
+    <div class="count-note mono" id="countNote"></div>
+    <div class="panel">
+      <div class="panel-head"><span class="mono"><span class="ldot on"></span>Live activity</span><span class="mono" style="color:var(--faint)" id="panelCount">0 events</span></div>
+      <div class="feed" id="feed"><div class="spinner"></div></div>
     </div>
   </div>
-  <div class="count-note mono" id="countNote"></div>
 
-  <div class="panel">
-    <div class="panel-head">
-      <span class="mono"><span class="ldot on"></span>Live activity</span>
-      <span class="mono" style="color:var(--faint)" id="panelCount">0 events</span>
+  <!-- CONTACTS -->
+  <div id="view-contacts" class="hidden">
+    <div class="verify-card" style="margin-bottom:16px">
+      <h2>Label a number</h2>
+      <p>Give any number a name. Labelled numbers then show that name across your activity feed — a private, personal directory. Nothing leaves your database.</p>
+      <div class="form-row">
+        <input id="cNumber" type="text" placeholder="Number (e.g. +9198…) or sender ID" />
+        <input id="cName" type="text" placeholder="Name (e.g. Landlord)" />
+        <input id="cNote" type="text" placeholder="Note (optional)" style="min-width:120px" />
+        <button class="btn btn-primary" id="cSave">Save</button>
+      </div>
+      <div class="msg" id="cMsg"></div>
     </div>
-    <div class="feed" id="feed"><div class="spinner"></div></div>
+    <div class="toolbar">
+      <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="cSearch" type="text" placeholder="Search your saved contacts…" /></div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><span class="mono">Saved contacts</span><span class="mono" style="color:var(--faint)" id="cCount">0</span></div>
+      <div id="cList"><div class="empty" style="padding:40px">No saved contacts yet.</div></div>
+    </div>
+  </div>
+
+  <!-- VERIFY UPI -->
+  <div id="view-upi" class="hidden">
+    <div class="verify-card">
+      <h2>Verify a UPI ID</h2>
+      <p>Check the registered name behind a UPI ID before you send money — so you don’t pay the wrong person. Enter the UPI ID (VPA) and verify.</p>
+      <div class="vpa-input">
+        <input id="vpaInput" type="text" placeholder="name@okhdfcbank" autocapitalize="off" autocomplete="off" spellcheck="false" />
+        <button class="btn btn-primary" id="vpaBtn">Verify</button>
+      </div>
+      <div class="result" id="vpaResult"></div>
+      <div class="setup-note" id="upiSetup"></div>
+    </div>
   </div>
 
   <footer>
-    <span class="mono">AES-grade rules · Google Firebase · approved accounts only</span><br>
-    Signed in as <b id="footerEmail">—</b> · <span id="footerCount">0</span> events loaded
+    <span class="mono">approved accounts only · Google Firebase · your data stays private</span><br>
+    Signed in as <b id="footerEmail">—</b>
   </footer>
 </div>
 
@@ -248,64 +283,105 @@
 <script src="firebase-config.js"></script>
 <script>
 (function () {
-  const $ = (id) => document.getElementById(id);
-  const loginScreen=$('loginScreen'), waitScreen=$('waitScreen'), appScreen=$('appScreen'), loginMsg=$('loginMsg');
+  // ===== paste your Cloudflare Worker URL here (see UPI-SETUP.md) =====
+  const UPI_VERIFY_ENDPOINT = "";
+  // ====================================================================
 
-  if (!window.firebaseConfig || window.firebaseConfig.projectId === 'YOUR_PROJECT_ID') {
-    loginMsg.className='msg err'; loginMsg.textContent='Firebase config missing.'; return;
-  }
+  const $ = (id)=>document.getElementById(id);
+  const loginScreen=$('loginScreen'), waitScreen=$('waitScreen'), appScreen=$('appScreen'), loginMsg=$('loginMsg');
+  if (!window.firebaseConfig || window.firebaseConfig.projectId==='YOUR_PROJECT_ID'){ loginMsg.className='msg err'; loginMsg.textContent='Firebase config missing.'; return; }
   firebase.initializeApp(window.firebaseConfig);
   const auth=firebase.auth(), db=firebase.firestore();
-  let events=[], filter='all', searchQ='', listenerStarted=false, userDocUnsub=null, alertsOn=false, audioCtx=null;
+  let events=[], labels={}, filter='all', searchQ='', cSearchQ='', listenerStarted=false, userDocUnsub=null, labelUnsub=null, alertsOn=false, audioCtx=null;
 
   function show(el){ [loginScreen,waitScreen,appScreen].forEach(s=>s.classList.add('hidden')); el.classList.remove('hidden'); }
 
   auth.onAuthStateChanged(async (user)=>{
     if (userDocUnsub){ userDocUnsub(); userDocUnsub=null; }
+    if (labelUnsub){ labelUnsub(); labelUnsub=null; }
     if (!user){ show(loginScreen); return; }
     const ref=db.collection('users').doc(user.uid);
-    try { const snap=await ref.get();
-      if(!snap.exists) await ref.set({ email:user.email, approved:false, requestedAt:firebase.firestore.FieldValue.serverTimestamp() });
-    } catch(e){}
+    try{ const snap=await ref.get(); if(!snap.exists) await ref.set({ email:user.email, approved:false, requestedAt:firebase.firestore.FieldValue.serverTimestamp() }); }catch(e){}
     userDocUnsub=ref.onSnapshot((doc)=>{
       const approved=doc.exists && doc.data() && doc.data().approved===true;
       if (approved){ $('footerEmail').textContent=user.email||'—'; show(appScreen);
-        if(!listenerStarted){ listenerStarted=true; startListener(); } }
+        if(!listenerStarted){ listenerStarted=true; startListener(); startLabels(); } }
       else { $('waitEmail').textContent=user.email||user.uid; show(waitScreen); }
     }, ()=>{ $('waitEmail').textContent=user.email||user.uid; show(waitScreen); });
   });
 
   function creds(){ return { email:$('email').value.trim(), pass:$('password').value }; }
   function setMsg(t,ok){ loginMsg.className='msg '+(ok?'ok':'err'); loginMsg.textContent=t; }
-  function friendly(e){ const m={ 'auth/invalid-email':'That email looks invalid.','auth/missing-password':'Enter a password.',
-    'auth/weak-password':'Password must be at least 6 characters.','auth/email-already-in-use':'Account exists — just tap Sign in.',
-    'auth/invalid-credential':'Wrong email or password.','auth/wrong-password':'Wrong password.',
-    'auth/user-not-found':'No account yet — tap Create my account.','auth/too-many-requests':'Too many tries. Wait and retry.' };
-    return m[e.code]||e.message; }
-  $('signInBtn').addEventListener('click',()=>{ const {email,pass}=creds(); setMsg('Signing in…',true);
-    auth.signInWithEmailAndPassword(email,pass).catch(e=>setMsg(friendly(e),false)); });
-  $('createBtn').addEventListener('click',()=>{ const {email,pass}=creds(); setMsg('Creating account…',true);
-    auth.createUserWithEmailAndPassword(email,pass).then(()=>setMsg('Account created — waiting for approval.',true)).catch(e=>setMsg(friendly(e),false)); });
+  function friendly(e){ const m={ 'auth/invalid-email':'That email looks invalid.','auth/missing-password':'Enter a password.','auth/weak-password':'Password must be at least 6 characters.','auth/email-already-in-use':'Account exists — just tap Sign in.','auth/invalid-credential':'Wrong email or password.','auth/wrong-password':'Wrong password.','auth/user-not-found':'No account yet — tap Create my account.','auth/too-many-requests':'Too many tries. Wait and retry.' }; return m[e.code]||e.message; }
+  $('signInBtn').addEventListener('click',()=>{ const {email,pass}=creds(); setMsg('Signing in…',true); auth.signInWithEmailAndPassword(email,pass).catch(e=>setMsg(friendly(e),false)); });
+  $('createBtn').addEventListener('click',()=>{ const {email,pass}=creds(); setMsg('Creating account…',true); auth.createUserWithEmailAndPassword(email,pass).then(()=>setMsg('Account created — waiting for approval.',true)).catch(e=>setMsg(friendly(e),false)); });
   $('password').addEventListener('keydown',(e)=>{ if(e.key==='Enter') $('signInBtn').click(); });
   $('signOutBtn').addEventListener('click',()=>auth.signOut());
   $('waitSignOut').addEventListener('click',()=>auth.signOut());
 
+  // tabs
+  $('tabs').querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    $('tabs').querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active');
+    const v=t.dataset.view; ['activity','contacts','upi'].forEach(id=>$('view-'+id).classList.toggle('hidden',id!==v));
+    if(v==='upi') renderUpiSetup();
+  }));
+
   // alerts
   function refreshAlerts(){ const b=$('alertsBtn'); b.classList.toggle('on',alertsOn); $('alertsLabel').textContent=alertsOn?'Alerts on':'Alerts off'; }
   $('alertsBtn').addEventListener('click',()=>{ alertsOn=!alertsOn; try{localStorage.setItem('relay_alerts',alertsOn?'1':'0');}catch(e){}
-    if(alertsOn){ try{ audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended')audioCtx.resume(); }catch(e){}
-      if('Notification' in window && Notification.permission==='default') Notification.requestPermission(); }
+    if(alertsOn){ try{ audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended')audioCtx.resume(); }catch(e){} if('Notification' in window && Notification.permission==='default') Notification.requestPermission(); }
     refreshAlerts(); });
   try{ alertsOn=localStorage.getItem('relay_alerts')==='1'; }catch(e){} refreshAlerts();
-  function beep(){ if(!audioCtx)return; try{ const o=audioCtx.createOscillator(),g=audioCtx.createGain();
-    o.type='sine'; o.frequency.value=920; o.connect(g); g.connect(audioCtx.destination);
-    g.gain.setValueAtTime(0.001,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.25,audioCtx.currentTime+0.01);
-    g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.34); o.start(); o.stop(audioCtx.currentTime+0.35); }catch(e){} }
-  function notify(e){ beep(); if('Notification' in window && Notification.permission==='granted'){
-    const who=e.from||'Unknown'; const title=e.type==='sms'?('New SMS · '+who):(labelFor(e.type)+' · '+who);
-    const body=e.type==='sms'?(e.text||''):(e.type==='call_ended'&&e.duration?('Duration '+fmtDur(e.duration)):'');
-    try{ new Notification(title,{body:body}); }catch(e){} } }
+  function beep(){ if(!audioCtx)return; try{ const o=audioCtx.createOscillator(),g=audioCtx.createGain(); o.type='sine'; o.frequency.value=920; o.connect(g); g.connect(audioCtx.destination); g.gain.setValueAtTime(0.001,audioCtx.currentTime); g.gain.exponentialRampToValueAtTime(0.25,audioCtx.currentTime+0.01); g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.34); o.start(); o.stop(audioCtx.currentTime+0.35);}catch(e){} }
+  function notify(e){ beep(); if('Notification' in window && Notification.permission==='granted'){ const who=displayName(e.from)||e.from||'Unknown'; const title=e.type==='sms'?('New SMS · '+who):(labelFor(e.type)+' · '+who); const body=e.type==='sms'?(e.text||''):(e.type==='call_ended'&&e.duration?('Duration '+fmtDur(e.duration)):''); try{ new Notification(title,{body:body}); }catch(e){} } }
 
+  // ---------- labels / contacts ----------
+  function normKey(s){ s=(s||'').trim(); const d=s.replace(/\D/g,''); if(d.length>=10) return d.slice(-10); return s.toLowerCase().replace(/[^a-z0-9]/g,'')||'x'; }
+  function displayName(from){ const k=normKey(from); return labels[k]?labels[k].name:null; }
+  function startLabels(){ labelUnsub=db.collection('labels').onSnapshot((snap)=>{ labels={}; snap.forEach(d=>{ labels[d.id]={...d.data()}; }); render(); renderContacts(); },()=>{}); }
+  $('cSave').addEventListener('click',()=>{
+    const num=$('cNumber').value.trim(), name=$('cName').value.trim(), note=$('cNote').value.trim();
+    if(!num||!name){ $('cMsg').className='msg err'; $('cMsg').textContent='Enter a number and a name.'; return; }
+    const key=normKey(num);
+    db.collection('labels').doc(key).set({ number:num, name:name, note:note, updatedAt:firebase.firestore.FieldValue.serverTimestamp() })
+      .then(()=>{ $('cMsg').className='msg ok'; $('cMsg').textContent='Saved "'+name+'".'; $('cNumber').value=''; $('cName').value=''; $('cNote').value=''; })
+      .catch(e=>{ $('cMsg').className='msg err'; $('cMsg').textContent=e.message; });
+  });
+  $('cSearch').addEventListener('input',(e)=>{ cSearchQ=e.target.value.trim().toLowerCase(); renderContacts(); });
+  function renderContacts(){
+    const list=$('cList'); const arr=Object.keys(labels).map(k=>({key:k,...labels[k]}))
+      .filter(c=>{ if(!cSearchQ)return true; return ((c.name||'')+' '+(c.number||'')+' '+(c.note||'')).toLowerCase().includes(cSearchQ); })
+      .sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+    $('cCount').textContent=Object.keys(labels).length;
+    if(!arr.length){ list.innerHTML='<div class="empty" style="padding:40px">'+(cSearchQ?'No matches.':'No saved contacts yet.')+'</div>'; return; }
+    list.innerHTML=arr.map(c=>'<div class="c-row"><div class="avatar" style="background:'+avatarGrad(c.name||c.number)+'">'+escapeHtml(initials(c.name||c.number))+'</div>'+
+      '<div class="c-main"><div class="c-name">'+escapeHtml(c.name)+'</div><div class="c-num">'+escapeHtml(c.number||c.key)+'</div>'+(c.note?'<div class="c-note">'+escapeHtml(c.note)+'</div>':'')+'</div>'+
+      '<div class="c-actions"><span class="link-mini c-del" data-key="'+escapeHtml(c.key)+'">Delete</span></div></div>').join('');
+  }
+  $('cList').addEventListener('click',(e)=>{ const b=e.target.closest('.c-del'); if(!b)return; if(!confirm('Delete this contact?'))return; db.collection('labels').doc(b.getAttribute('data-key')).delete().catch(()=>{}); });
+
+  // ---------- verify upi ----------
+  function renderUpiSetup(){
+    const el=$('upiSetup');
+    if(UPI_VERIFY_ENDPOINT){ el.style.display='none'; return; }
+    el.style.display='block';
+    el.innerHTML='<b>Not connected yet.</b> Real UPI name checks need a paid Cashfree verification account plus a small backend to hold the secret keys — there is no free public API for this. Follow <code>UPI-SETUP.md</code> (free Cloudflare Worker + your Cashfree keys), then paste the worker URL into <code>UPI_VERIFY_ENDPOINT</code> and this tab goes live.';
+  }
+  $('vpaBtn').addEventListener('click',verifyVpa);
+  $('vpaInput').addEventListener('keydown',(e)=>{ if(e.key==='Enter') verifyVpa(); });
+  function verifyVpa(){
+    const vpa=$('vpaInput').value.trim(); const r=$('vpaResult');
+    if(!/^[\w.\-]{2,}@[\w.\-]{2,}$/.test(vpa)){ r.className='result show invalid'; r.innerHTML='<div class="rname">Invalid UPI ID</div><div class="rstatus">Enter like name@bank</div>'; return; }
+    if(!UPI_VERIFY_ENDPOINT){ renderUpiSetup(); r.className='result show invalid'; r.innerHTML='<div class="rname">Backend not set up</div><div class="rstatus">See the note below</div>'; return; }
+    r.className='result show'; r.innerHTML='<div class="rlabel mono">Checking…</div><div class="spinner sm"></div>';
+    fetch(UPI_VERIFY_ENDPOINT,{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({vpa}) })
+      .then(res=>res.json())
+      .then(d=>{ if(d.name){ r.className='result show valid'; r.innerHTML='<div class="rlabel mono">Registered name</div><div class="rname">'+escapeHtml(d.name)+'</div><div class="rstatus">'+escapeHtml(String(d.status||'VERIFIED'))+' · '+escapeHtml(vpa)+'</div>'; }
+        else { r.className='result show invalid'; r.innerHTML='<div class="rname">No name found</div><div class="rstatus">'+escapeHtml(d.error||d.status||'This UPI ID may be invalid')+'</div>'; } })
+      .catch(err=>{ r.className='result show invalid'; r.innerHTML='<div class="rname">Check failed</div><div class="rstatus">'+escapeHtml(String(err))+'</div>'; });
+  }
+
+  // ---------- activity feed ----------
   function startListener(){
     db.collection('events').orderBy('ts','desc').limit(300).onSnapshot(
       (snap)=>{ $('ldot').classList.add('on'); $('statusText').textContent='Live';
@@ -313,88 +389,58 @@
         const changes=first?null:snap.docChanges();
         if(changes && alertsOn) changes.forEach(ch=>{ if(ch.type==='added') notify({id:ch.doc.id,...ch.doc.data()}); });
         render(changes); updateStats(); },
-      (err)=>{ $('ldot').classList.remove('on'); $('statusText').textContent='Error';
-        $('feed').innerHTML=emptyState('Cannot read messages',err.message); }
+      (err)=>{ $('ldot').classList.remove('on'); $('statusText').textContent='Error'; $('feed').innerHTML=emptyState('Cannot read messages',err.message); }
     );
-    $('filterSeg').querySelectorAll('.seg').forEach(c=>c.addEventListener('click',()=>{
-      $('filterSeg').querySelectorAll('.seg').forEach(x=>x.classList.remove('active'));
-      c.classList.add('active'); filter=c.dataset.filter; render(); }));
+    $('filterSeg').querySelectorAll('.seg').forEach(c=>c.addEventListener('click',()=>{ $('filterSeg').querySelectorAll('.seg').forEach(x=>x.classList.remove('active')); c.classList.add('active'); filter=c.dataset.filter; render(); }));
     $('search').addEventListener('input',(e)=>{ searchQ=e.target.value.trim().toLowerCase(); render(); });
-    $('feed').addEventListener('click',(e)=>{ const b=e.target.closest('.otp'); if(!b)return; const code=b.getAttribute('data-code');
-      (navigator.clipboard?navigator.clipboard.writeText(code):Promise.reject())
-        .then(()=>{ const s=b.querySelector('span'); if(s){ s.textContent='Copied'; setTimeout(()=>{ s.textContent='Copy '+code; },1500);} }).catch(()=>{}); });
+    $('feed').addEventListener('click',(e)=>{ const b=e.target.closest('.otp'); if(!b)return; const code=b.getAttribute('data-code'); (navigator.clipboard?navigator.clipboard.writeText(code):Promise.reject()).then(()=>{ const s=b.querySelector('span'); if(s){ s.textContent='Copied'; setTimeout(()=>{ s.textContent='Copy '+code; },1500);} }).catch(()=>{}); });
   }
-
   function matches(e){
     if(filter==='sms' && e.type!=='sms') return false;
     if(filter==='call' && !(e.type&&e.type.startsWith('call'))) return false;
     if(filter==='missed' && e.type!=='call_missed') return false;
-    if(searchQ){ const hay=((e.from||'')+' '+(e.text||'')+' '+(e.device||'')).toLowerCase(); if(!hay.includes(searchQ)) return false; }
+    if(searchQ){ const nm=displayName(e.from)||''; const hay=((e.from||'')+' '+nm+' '+(e.text||'')+' '+(e.device||'')).toLowerCase(); if(!hay.includes(searchQ)) return false; }
     return true;
   }
   function render(changes){
     const feed=$('feed'), list=events.filter(matches);
-    const note = (searchQ||filter!=='all') ? ('Showing '+list.length+' of '+events.length) : (events.length+' events');
-    $('countNote').textContent=note; $('panelCount').textContent=events.length+' events'; $('footerCount').textContent=events.length;
+    const note=(searchQ||filter!=='all')?('Showing '+list.length+' of '+events.length):(events.length+' events');
+    $('countNote').textContent=note; $('panelCount').textContent=events.length+' events';
     if(!list.length){ feed.innerHTML=emptyState(searchQ?'No matches':'No events yet', searchQ?'Try a different search term.':'Incoming texts and calls appear here in real time.'); return; }
     const newIds=new Set(); if(changes) changes.forEach(ch=>{ if(ch.type==='added') newIds.add(ch.doc.id); });
-    feed.innerHTML=list.map(e=>row(e,newIds.has(e.id))).join('');
+    feed.innerHTML=list.map(e=>rowHtml(e,newIds.has(e.id))).join('');
   }
-  function row(e,isNew){
-    const t=e.type||'sms'; const who=escapeHtml(e.from||'Unknown number');
-    const av='<div class="avatar" style="background:'+avatarGrad(e.from||'?')+'">'+escapeHtml(initials(e.from))+'</div>';
-    const dev=e.device?'<span class="badge dev">'+escapeHtml(e.device)+'</span>':'';
-    const when='<span class="when">'+fmtFull(e.ts)+'</span>';
+  function rowHtml(e,isNew){
+    const t=e.type||'sms'; const raw=e.from||'Unknown number'; const nm=displayName(e.from);
+    const title=escapeHtml(nm||raw); const subnum=nm?'<div class="subnum">'+escapeHtml(raw)+'</div>':'';
+    const av='<div class="avatar" style="background:'+avatarGrad(nm||raw)+'">'+escapeHtml(initials(nm||raw))+'</div>';
+    const dev=e.device?'<span class="badge dev">'+escapeHtml(e.device)+'</span>':''; const when='<span class="when">'+fmtFull(e.ts)+'</span>';
     let statusLine, rightCol, sub='';
-    if(t==='sms'){
-      const code=otpCode(e.text);
-      statusLine='<span class="st sms">✉ SMS</span>';
-      sub='<div class="sms-text">'+escapeHtml(e.text||'')+'</div>';
-      rightCol='<div class="right-col"><span class="hm">'+fmtHM(e.ts)+'</span><span class="rt">'+fmtRel(e.ts)+'</span>'+
-        (code?'<button class="otp" data-code="'+code+'">'+icons.copy+'<span>Copy '+code+'</span></button>':'')+'</div>';
-    } else if(t==='call_missed'){
-      statusLine='<span class="st miss">✗ Missed call</span>';
-      rightCol='<div class="right-col"><span class="hm">'+fmtHM(e.ts)+'</span><span class="dur">—</span></div>';
-    } else if(t==='call_incoming'){
-      statusLine='<span class="st in">▸ Incoming call</span>';
-      rightCol='<div class="right-col"><span class="hm">'+fmtHM(e.ts)+'</span><span class="rt">ringing</span></div>';
-    } else {
-      statusLine='<span class="st in">✓ Answered</span>';
-      rightCol='<div class="right-col"><span class="hm">'+fmtHM(e.ts)+'</span><span class="dur">'+(e.duration?fmtDur(e.duration):'—')+'</span></div>';
-    }
-    return '<div class="row '+t+' '+(isNew?'flash':'')+'">'+av+
-      '<div class="row-main"><div class="row-top"><span class="name">'+who+'</span></div>'+
-      '<div class="status">'+statusLine+'</div>'+sub+
-      '<div class="row-meta">'+dev+when+'</div></div>'+rightCol+'</div>';
+    if(t==='sms'){ const code=otpCode(e.text); statusLine='<span class="st sms">✉ SMS</span>'; sub='<div class="sms-text">'+escapeHtml(e.text||'')+'</div>';
+      rightCol='<div class="right-col"><span class="hm">'+fmtHM(e.ts)+'</span><span class="rt">'+fmtRel(e.ts)+'</span>'+(code?'<button class="otp" data-code="'+code+'">'+icons.copy+'<span>Copy '+code+'</span></button>':'')+'</div>'; }
+    else if(t==='call_missed'){ statusLine='<span class="st miss">✗ Missed call</span>'; rightCol='<div class="right-col"><span class="hm">'+fmtHM(e.ts)+'</span><span class="dur">—</span></div>'; }
+    else if(t==='call_incoming'){ statusLine='<span class="st in">▸ Incoming call</span>'; rightCol='<div class="right-col"><span class="hm">'+fmtHM(e.ts)+'</span><span class="rt">ringing</span></div>'; }
+    else { statusLine='<span class="st in">✓ Answered</span>'; rightCol='<div class="right-col"><span class="hm">'+fmtHM(e.ts)+'</span><span class="dur">'+(e.duration?fmtDur(e.duration):'—')+'</span></div>'; }
+    return '<div class="row '+t+' '+(isNew?'flash':'')+'">'+av+'<div class="row-main"><div class="row-top"><span class="name">'+title+'</span></div>'+subnum+'<div class="status">'+statusLine+'</div>'+sub+'<div class="row-meta">'+dev+when+'</div></div>'+rightCol+'</div>';
   }
   function updateStats(){ $('stTotal').textContent=events.length; const d=new Date(); d.setHours(0,0,0,0); const t=d.getTime();
     $('stSms').textContent=events.filter(e=>e.type==='sms'&&msOf(e.ts)>=t).length;
     $('stCalls').textContent=events.filter(e=>e.type&&e.type.startsWith('call')&&msOf(e.ts)>=t).length;
     $('stDevices').textContent=new Set(events.filter(e=>msOf(e.ts)>=t).map(e=>e.device).filter(Boolean)).size; }
 
-  function initials(s){ s=(s||'').trim(); if(!s) return '#';
-    if(/[a-zA-Z]/.test(s)){ const p=s.split(/\s+/).filter(Boolean); return ((p[0][0]||'')+(p[1]?p[1][0]:(p[0][1]||''))).toUpperCase(); }
-    const dg=s.replace(/\D/g,''); return dg.slice(-2)||'#'; }
-  function avatarGrad(s){ let h=0; s=s||'x'; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0; const hue=h%360;
-    return 'linear-gradient(135deg,hsl('+hue+' 65% 60%),hsl('+((hue+38)%360)+' 65% 48%))'; }
-  function otpCode(text){ if(!text) return null; const m=text.match(/\b(\d{4,8})\b/); if(!m) return null;
-    const kw=/otp|code|pin|verif|password|one[\s-]?time|2fa|authenticat|log\s?in/i.test(text);
-    if(kw || /^\D*\d{4,8}\D*$/.test(text)) return m[1]; return null; }
+  function initials(s){ s=(s||'').trim(); if(!s) return '#'; if(/[a-zA-Z]/.test(s)){ const p=s.split(/\s+/).filter(Boolean); return ((p[0][0]||'')+(p[1]?p[1][0]:(p[0][1]||''))).toUpperCase(); } const dg=s.replace(/\D/g,''); return dg.slice(-2)||'#'; }
+  function avatarGrad(s){ let h=0; s=s||'x'; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0; const hue=h%360; return 'linear-gradient(135deg,hsl('+hue+' 65% 60%),hsl('+((hue+38)%360)+' 65% 48%))'; }
+  function otpCode(text){ if(!text) return null; const m=text.match(/\b(\d{4,8})\b/); if(!m) return null; const kw=/otp|code|pin|verif|password|one[\s-]?time|2fa|authenticat|log\s?in/i.test(text); if(kw || /^\D*\d{4,8}\D*$/.test(text)) return m[1]; return null; }
   function msOf(ts){ if(!ts)return 0; if(typeof ts.toMillis==='function')return ts.toMillis(); if(ts.seconds)return ts.seconds*1000; return new Date(ts).getTime()||0; }
   function fmtHM(ts){ const ms=msOf(ts); if(!ms)return '--:--'; return new Date(ms).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}); }
-  function fmtRel(ts){ const ms=msOf(ts); if(!ms)return ''; const d=(Date.now()-ms)/1000;
-    if(d<60)return 'now'; if(d<3600)return Math.floor(d/60)+'m'; if(d<86400)return Math.floor(d/3600)+'h'; return Math.floor(d/86400)+'d'; }
-  function fmtFull(ts){ const ms=msOf(ts); if(!ms)return 'unknown time'; const d=new Date(ms);
-    return d.toLocaleString([], {weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
+  function fmtRel(ts){ const ms=msOf(ts); if(!ms)return ''; const d=(Date.now()-ms)/1000; if(d<60)return 'now'; if(d<3600)return Math.floor(d/60)+'m'; if(d<86400)return Math.floor(d/3600)+'h'; return Math.floor(d/86400)+'d'; }
+  function fmtFull(ts){ const ms=msOf(ts); if(!ms)return 'unknown time'; return new Date(ms).toLocaleString([], {weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); }
   function fmtDur(s){ const m=Math.floor(s/60),sec=s%60; return m?(m+'m '+sec+'s'):(sec+'s'); }
   function labelFor(t){ return {sms:'SMS',call_incoming:'Incoming call',call_missed:'Missed call',call_ended:'Call'}[t]||t; }
   function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
   function emptyState(title,sub){ return '<div class="empty">'+icons.empty+'<div style="font-size:15px;color:var(--text);margin-bottom:6px;font-weight:600;">'+title+'</div><div>'+sub+'</div></div>'; }
-
-  const icons = {
-    copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
-    empty:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'
-  };
+  const icons={ copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+    empty:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' };
   setInterval(()=>{ if(!appScreen.classList.contains('hidden') && events.length) render(); }, 60000);
 })();
 </script>
